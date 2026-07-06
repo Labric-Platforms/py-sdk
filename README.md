@@ -13,7 +13,8 @@ pip install labric
 ```python
 from labric import Labric
 
-client = Labric(token="lbk_...")
+client = Labric()  # reads LABRIC_API_KEY from the environment
+# or pass the API key explicitly: Labric(token="lbk_...")
 
 client.tools.write(
     target_name="samples",
