@@ -38,7 +38,7 @@ Instantiate and use the client with the following:
 from labric import Labric
 
 client = Labric(
-    token="<token>",
+    api_key="<token>",
 )
 
 client.tools.write(
@@ -76,7 +76,7 @@ import asyncio
 from labric import AsyncLabric
 
 client = AsyncLabric(
-    token="<token>",
+    api_key="<token>",
 )
 
 

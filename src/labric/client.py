@@ -33,7 +33,7 @@ class Labric:
 
 
 
-    token : typing.Optional[typing.Union[str, typing.Callable[[], str]]]
+    api_key : typing.Optional[typing.Union[str, typing.Callable[[], str]]]
     headers : typing.Optional[typing.Dict[str, str]]
         Additional headers to send with every request.
 
@@ -63,7 +63,7 @@ class Labric:
     from labric import Labric
 
     client = Labric(
-        token="YOUR_TOKEN",
+        api_key="YOUR_API_KEY",
     )
     """
 
@@ -72,7 +72,7 @@ class Labric:
         *,
         base_url: typing.Optional[str] = None,
         environment: LabricEnvironment = LabricEnvironment.DEFAULT,
-        token: typing.Optional[typing.Union[str, typing.Callable[[], str]]] = os.getenv("LABRIC_API_KEY"),
+        api_key: typing.Optional[typing.Union[str, typing.Callable[[], str]]] = os.getenv("LABRIC_API_KEY"),
         headers: typing.Optional[typing.Dict[str, str]] = None,
         timeout: typing.Optional[float] = None,
         max_retries: typing.Optional[int] = None,
@@ -84,11 +84,13 @@ class Labric:
     ):
         _defaulted_timeout = timeout if timeout is not None else 60 if httpx_client is None else None
         _defaulted_max_retries = max_retries if max_retries is not None else 2
-        if token is None:
-            raise ApiError(body="The client must be instantiated be either passing in token or setting LABRIC_API_KEY")
+        if api_key is None:
+            raise ApiError(
+                body="The client must be instantiated be either passing in api_key or setting LABRIC_API_KEY"
+            )
         self._client_wrapper = SyncClientWrapper(
             base_url=_get_base_url(base_url=base_url, environment=environment),
-            token=token,
+            api_key=api_key,
             headers=headers,
             httpx_client=httpx_client
             if httpx_client is not None
@@ -148,7 +150,7 @@ class AsyncLabric:
 
 
 
-    token : typing.Optional[typing.Union[str, typing.Callable[[], str]]]
+    api_key : typing.Optional[typing.Union[str, typing.Callable[[], str]]]
     headers : typing.Optional[typing.Dict[str, str]]
         Additional headers to send with every request.
 
@@ -181,7 +183,7 @@ class AsyncLabric:
     from labric import AsyncLabric
 
     client = AsyncLabric(
-        token="YOUR_TOKEN",
+        api_key="YOUR_API_KEY",
     )
     """
 
@@ -190,7 +192,7 @@ class AsyncLabric:
         *,
         base_url: typing.Optional[str] = None,
         environment: LabricEnvironment = LabricEnvironment.DEFAULT,
-        token: typing.Optional[typing.Union[str, typing.Callable[[], str]]] = os.getenv("LABRIC_API_KEY"),
+        api_key: typing.Optional[typing.Union[str, typing.Callable[[], str]]] = os.getenv("LABRIC_API_KEY"),
         headers: typing.Optional[typing.Dict[str, str]] = None,
         async_token: typing.Optional[typing.Callable[[], typing.Awaitable[str]]] = None,
         timeout: typing.Optional[float] = None,
@@ -203,11 +205,13 @@ class AsyncLabric:
     ):
         _defaulted_timeout = timeout if timeout is not None else 60 if httpx_client is None else None
         _defaulted_max_retries = max_retries if max_retries is not None else 2
-        if token is None:
-            raise ApiError(body="The client must be instantiated be either passing in token or setting LABRIC_API_KEY")
+        if api_key is None:
+            raise ApiError(
+                body="The client must be instantiated be either passing in api_key or setting LABRIC_API_KEY"
+            )
         self._client_wrapper = AsyncClientWrapper(
             base_url=_get_base_url(base_url=base_url, environment=environment),
-            token=token,
+            api_key=api_key,
             headers=headers,
             async_token=async_token,
             httpx_client=httpx_client

@@ -36,7 +36,7 @@ from labric import Labric
 from labric.environment import LabricEnvironment
 
 client = Labric(
-    token="<token>",
+    api_key="<token>",
     environment=LabricEnvironment.DEFAULT,
 )
 
@@ -200,7 +200,7 @@ from labric import Labric
 from labric.environment import LabricEnvironment
 
 client = Labric(
-    token="<token>",
+    api_key="<token>",
     environment=LabricEnvironment.DEFAULT,
 )
 
@@ -305,7 +305,7 @@ from labric import Labric
 from labric.environment import LabricEnvironment
 
 client = Labric(
-    token="<token>",
+    api_key="<token>",
     environment=LabricEnvironment.DEFAULT,
 )
 
@@ -390,7 +390,7 @@ from labric import Labric
 from labric.environment import LabricEnvironment
 
 client = Labric(
-    token="<token>",
+    api_key="<token>",
     environment=LabricEnvironment.DEFAULT,
 )
 
@@ -479,7 +479,7 @@ from labric import Labric
 from labric.environment import LabricEnvironment
 
 client = Labric(
-    token="<token>",
+    api_key="<token>",
     environment=LabricEnvironment.DEFAULT,
 )
 
@@ -547,7 +547,7 @@ from labric import Labric
 from labric.environment import LabricEnvironment
 
 client = Labric(
-    token="<token>",
+    api_key="<token>",
     environment=LabricEnvironment.DEFAULT,
 )
 
@@ -646,7 +646,7 @@ from labric import Labric
 from labric.environment import LabricEnvironment
 
 client = Labric(
-    token="<token>",
+    api_key="<token>",
     environment=LabricEnvironment.DEFAULT,
 )
 
@@ -724,7 +724,7 @@ from labric import Labric
 from labric.environment import LabricEnvironment
 
 client = Labric(
-    token="<token>",
+    api_key="<token>",
     environment=LabricEnvironment.DEFAULT,
 )
 
@@ -808,7 +808,7 @@ from labric import Labric
 from labric.environment import LabricEnvironment
 
 client = Labric(
-    token="<token>",
+    api_key="<token>",
     environment=LabricEnvironment.DEFAULT,
 )
 

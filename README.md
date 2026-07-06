@@ -14,7 +14,7 @@ pip install labric
 from labric import Labric
 
 client = Labric()  # reads LABRIC_API_KEY from the environment
-# or pass the API key explicitly: Labric(token="lbk_...")
+# or pass the API key explicitly: Labric(api_key="lbk_...")
 # requests go to https://platform.labric.co by default; override with
 # Labric(base_url="http://localhost:3000")
 

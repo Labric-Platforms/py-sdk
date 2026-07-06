@@ -109,7 +109,7 @@ class ToolsClient:
         from labric import Labric
 
         client = Labric(
-            token="YOUR_TOKEN",
+            api_key="YOUR_API_KEY",
         )
         client.tools.write(
             target_name="target_name",
@@ -177,7 +177,7 @@ class ToolsClient:
         from labric import Labric
 
         client = Labric(
-            token="YOUR_TOKEN",
+            api_key="YOUR_API_KEY",
         )
         client.tools.read(
             target_name="target_name",
@@ -229,7 +229,7 @@ class ToolsClient:
         from labric import Labric
 
         client = Labric(
-            token="YOUR_TOKEN",
+            api_key="YOUR_API_KEY",
         )
         client.tools.execute_sql(
             query="query",
@@ -272,7 +272,7 @@ class ToolsClient:
         from labric import Labric
 
         client = Labric(
-            token="YOUR_TOKEN",
+            api_key="YOUR_API_KEY",
         )
         client.tools.upload_file()
         """
@@ -310,7 +310,7 @@ class ToolsClient:
         from labric import Labric
 
         client = Labric(
-            token="YOUR_TOKEN",
+            api_key="YOUR_API_KEY",
         )
         client.tools.get_schema()
         """
@@ -357,7 +357,7 @@ class ToolsClient:
         from labric import Labric
 
         client = Labric(
-            token="YOUR_TOKEN",
+            api_key="YOUR_API_KEY",
         )
         client.tools.list_files()
         """
@@ -397,7 +397,7 @@ class ToolsClient:
         from labric import Labric
 
         client = Labric(
-            token="YOUR_TOKEN",
+            api_key="YOUR_API_KEY",
         )
         client.tools.get_file_content(
             file_id="file_id",
@@ -434,7 +434,7 @@ class ToolsClient:
         from labric import Labric
 
         client = Labric(
-            token="YOUR_TOKEN",
+            api_key="YOUR_API_KEY",
         )
         client.tools.revert_job_execution(
             execution_id="execution_id",
@@ -485,7 +485,7 @@ class ToolsClient:
         from labric import Labric
 
         client = Labric(
-            token="YOUR_TOKEN",
+            api_key="YOUR_API_KEY",
         )
         client.tools.batch_write(
             tables={"key": [{"key": "value"}]},
@@ -584,7 +584,7 @@ class AsyncToolsClient:
         from labric import AsyncLabric
 
         client = AsyncLabric(
-            token="YOUR_TOKEN",
+            api_key="YOUR_API_KEY",
         )
 
 
@@ -660,7 +660,7 @@ class AsyncToolsClient:
         from labric import AsyncLabric
 
         client = AsyncLabric(
-            token="YOUR_TOKEN",
+            api_key="YOUR_API_KEY",
         )
 
 
@@ -720,7 +720,7 @@ class AsyncToolsClient:
         from labric import AsyncLabric
 
         client = AsyncLabric(
-            token="YOUR_TOKEN",
+            api_key="YOUR_API_KEY",
         )
 
 
@@ -771,7 +771,7 @@ class AsyncToolsClient:
         from labric import AsyncLabric
 
         client = AsyncLabric(
-            token="YOUR_TOKEN",
+            api_key="YOUR_API_KEY",
         )
 
 
@@ -817,7 +817,7 @@ class AsyncToolsClient:
         from labric import AsyncLabric
 
         client = AsyncLabric(
-            token="YOUR_TOKEN",
+            api_key="YOUR_API_KEY",
         )
 
 
@@ -872,7 +872,7 @@ class AsyncToolsClient:
         from labric import AsyncLabric
 
         client = AsyncLabric(
-            token="YOUR_TOKEN",
+            api_key="YOUR_API_KEY",
         )
 
 
@@ -920,7 +920,7 @@ class AsyncToolsClient:
         from labric import AsyncLabric
 
         client = AsyncLabric(
-            token="YOUR_TOKEN",
+            api_key="YOUR_API_KEY",
         )
 
 
@@ -965,7 +965,7 @@ class AsyncToolsClient:
         from labric import AsyncLabric
 
         client = AsyncLabric(
-            token="YOUR_TOKEN",
+            api_key="YOUR_API_KEY",
         )
 
 
@@ -1024,7 +1024,7 @@ class AsyncToolsClient:
         from labric import AsyncLabric
 
         client = AsyncLabric(
-            token="YOUR_TOKEN",
+            api_key="YOUR_API_KEY",
         )
 
 
