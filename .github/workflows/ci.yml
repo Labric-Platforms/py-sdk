@@ -23,7 +23,7 @@ jobs:
         run: uv sync
 
       - name: Verify package imports
-        run: uv run python -c "from labric import LabricApi, AsyncLabricApi"
+        run: uv run python -c "from labric import Labric, AsyncLabric"
 
       - name: Run tests
         run: uv run pytest src/labric/tests
