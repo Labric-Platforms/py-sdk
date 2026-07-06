@@ -7,13 +7,13 @@ import typing
 import httpx
 from .core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from .core.logging import LogConfig, Logger
-from .environment import LabricApiEnvironment
+from .environment import LabricEnvironment
 
 if typing.TYPE_CHECKING:
     from .tools.client import AsyncToolsClient, ToolsClient
 
 
-class LabricApi:
+class Labric:
     """
     Use this class to access the different functions within the SDK. You can instantiate any number of clients with different configuration that will propagate to these functions.
 
@@ -22,12 +22,12 @@ class LabricApi:
     base_url : typing.Optional[str]
         The base url to use for requests from the client.
 
-    environment : LabricApiEnvironment
-        The environment to use for requests from the client. from .environment import LabricApiEnvironment
+    environment : LabricEnvironment
+        The environment to use for requests from the client. from .environment import LabricEnvironment
 
 
 
-        Defaults to LabricApiEnvironment.DEFAULT
+        Defaults to LabricEnvironment.DEFAULT
 
 
 
@@ -58,9 +58,9 @@ class LabricApi:
 
     Examples
     --------
-    from labric import LabricApi
+    from labric import Labric
 
-    client = LabricApi(
+    client = Labric(
         token="YOUR_TOKEN",
     )
     """
@@ -69,7 +69,7 @@ class LabricApi:
         self,
         *,
         base_url: typing.Optional[str] = None,
-        environment: LabricApiEnvironment = LabricApiEnvironment.DEFAULT,
+        environment: LabricEnvironment = LabricEnvironment.DEFAULT,
         token: typing.Union[str, typing.Callable[[], str]],
         headers: typing.Optional[typing.Dict[str, str]] = None,
         timeout: typing.Optional[float] = None,
@@ -126,7 +126,7 @@ def _make_default_async_client(
     return httpx.AsyncClient(timeout=timeout)
 
 
-class AsyncLabricApi:
+class AsyncLabric:
     """
     Use this class to access the different functions within the SDK. You can instantiate any number of clients with different configuration that will propagate to these functions.
 
@@ -135,12 +135,12 @@ class AsyncLabricApi:
     base_url : typing.Optional[str]
         The base url to use for requests from the client.
 
-    environment : LabricApiEnvironment
-        The environment to use for requests from the client. from .environment import LabricApiEnvironment
+    environment : LabricEnvironment
+        The environment to use for requests from the client. from .environment import LabricEnvironment
 
 
 
-        Defaults to LabricApiEnvironment.DEFAULT
+        Defaults to LabricEnvironment.DEFAULT
 
 
 
@@ -174,9 +174,9 @@ class AsyncLabricApi:
 
     Examples
     --------
-    from labric import AsyncLabricApi
+    from labric import AsyncLabric
 
-    client = AsyncLabricApi(
+    client = AsyncLabric(
         token="YOUR_TOKEN",
     )
     """
@@ -185,7 +185,7 @@ class AsyncLabricApi:
         self,
         *,
         base_url: typing.Optional[str] = None,
-        environment: LabricApiEnvironment = LabricApiEnvironment.DEFAULT,
+        environment: LabricEnvironment = LabricEnvironment.DEFAULT,
         token: typing.Union[str, typing.Callable[[], str]],
         headers: typing.Optional[typing.Dict[str, str]] = None,
         async_token: typing.Optional[typing.Callable[[], typing.Awaitable[str]]] = None,
@@ -224,7 +224,7 @@ class AsyncLabricApi:
         return self._tools
 
 
-def _get_base_url(*, base_url: typing.Optional[str] = None, environment: LabricApiEnvironment) -> str:
+def _get_base_url(*, base_url: typing.Optional[str] = None, environment: LabricEnvironment) -> str:
     if base_url is not None:
         return base_url
     elif environment is not None:

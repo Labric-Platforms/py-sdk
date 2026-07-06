@@ -3,5 +3,5 @@
 import enum
 
 
-class LabricApiEnvironment(enum.Enum):
+class LabricEnvironment(enum.Enum):
     DEFAULT = "https://platform.labric.co"

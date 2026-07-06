@@ -48,11 +48,11 @@ if typing.TYPE_CHECKING:
     )
     from . import tools
     from ._default_clients import DefaultAioHttpClient, DefaultAsyncHttpxClient
-    from .client import AsyncLabricApi, LabricApi
-    from .environment import LabricApiEnvironment
+    from .client import AsyncLabric, Labric
+    from .environment import LabricEnvironment
     from .tools import LabricReadSchemaMode, LabricReadSchemaTargetType, LabricWriteSchemaTargetType
 _dynamic_imports: typing.Dict[str, str] = {
-    "AsyncLabricApi": ".client",
+    "AsyncLabric": ".client",
     "BadGatewayError": ".errors",
     "BadRequestError": ".errors",
     "BatchWriteOptions": ".types",
@@ -68,8 +68,8 @@ _dynamic_imports: typing.Dict[str, str] = {
     "GoneError": ".errors",
     "ImATeapotError": ".errors",
     "InternalServerError": ".errors",
-    "LabricApi": ".client",
-    "LabricApiEnvironment": ".environment",
+    "Labric": ".client",
+    "LabricEnvironment": ".environment",
     "LabricReadSchemaMode": ".tools",
     "LabricReadSchemaTargetType": ".tools",
     "LabricUploadFileSchema": ".types",
@@ -122,7 +122,7 @@ def __dir__():
 
 
 __all__ = [
-    "AsyncLabricApi",
+    "AsyncLabric",
     "BadGatewayError",
     "BadRequestError",
     "BatchWriteOptions",
@@ -138,8 +138,8 @@ __all__ = [
     "GoneError",
     "ImATeapotError",
     "InternalServerError",
-    "LabricApi",
-    "LabricApiEnvironment",
+    "Labric",
+    "LabricEnvironment",
     "LabricReadSchemaMode",
     "LabricReadSchemaTargetType",
     "LabricUploadFileSchema",

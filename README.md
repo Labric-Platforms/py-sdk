@@ -11,9 +11,9 @@ pip install labric
 ## Usage
 
 ```python
-from labric import LabricApi
+from labric import Labric
 
-client = LabricApi(token="lbk_...")
+client = Labric(token="lbk_...")
 
 client.tools.write(
     target_name="samples",
@@ -26,7 +26,7 @@ client.tools.write(
 An async client is also available:
 
 ```python
-from labric import AsyncLabricApi
+from labric import AsyncLabric
 ```
 
 See [`src/labric/reference.md`](src/labric/reference.md) for the full API reference.

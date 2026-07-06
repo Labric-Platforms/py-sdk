@@ -2,7 +2,10 @@
   "cliVersion": "5.63.1",
   "generatorName": "fernapi/fern-python-sdk",
   "generatorVersion": "5.15.2",
-  "originGitCommit": "1827a286121328cd9f486b8b208a9d6efcb678cf",
+  "generatorConfig": {
+    "client_class_name": "Labric"
+  },
+  "originGitCommit": "74ed35c2d38d26b68b5eb7074ef2d8df5dc7965c",
   "originGitCommitIsDirty": true,
   "invokedBy": "manual"
 }

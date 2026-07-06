@@ -35,9 +35,9 @@ A full reference for this library is available [here](./reference.md).
 Instantiate and use the client with the following:
 
 ```python
-from labric import LabricApi
+from labric import Labric
 
-client = LabricApi(
+client = Labric(
     token="<token>",
 )
 
@@ -58,11 +58,11 @@ client.tools.write(
 This SDK allows you to configure different environments for API requests.
 
 ```python
-from labric import LabricApi
-from labric.environment import LabricApiEnvironment
+from labric import Labric
+from labric.environment import LabricEnvironment
 
-client = LabricApi(
-    environment=LabricApiEnvironment.DEFAULT,
+client = Labric(
+    environment=LabricEnvironment.DEFAULT,
 )
 ```
 
@@ -73,9 +73,9 @@ The SDK also exports an `async` client so that you can make non-blocking calls t
 ```python
 import asyncio
 
-from labric import AsyncLabricApi
+from labric import AsyncLabric
 
-client = AsyncLabricApi(
+client = AsyncLabric(
     token="<token>",
 )
 
@@ -119,9 +119,9 @@ The SDK provides access to raw response data, including headers, through the `.w
 The `.with_raw_response` property returns a "raw" client that can be used to access the `.headers` and `.data` attributes.
 
 ```python
-from labric import LabricApi
+from labric import Labric
 
-client = LabricApi(...)
+client = Labric(...)
 response = client.tools.with_raw_response.write(...)
 print(response.headers)  # access the response headers
 print(response.status_code)  # access the response status code
@@ -163,9 +163,9 @@ client.tools.write(..., request_options={
 The SDK defaults to a 60 second timeout. You can configure this with a timeout option at the client or request level.
 
 ```python
-from labric import LabricApi
+from labric import Labric
 
-client = LabricApi(..., timeout=20.0)
+client = Labric(..., timeout=20.0)
 
 # Override timeout for a specific method
 client.tools.write(..., request_options={
@@ -180,9 +180,9 @@ and transports.
 
 ```python
 import httpx
-from labric import LabricApi
+from labric import Labric
 
-client = LabricApi(
+client = Labric(
     ...,
     httpx_client=httpx.Client(
         proxy="http://my.test.proxy.example.com",

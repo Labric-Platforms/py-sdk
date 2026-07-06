@@ -106,9 +106,9 @@ class ToolsClient:
 
         Examples
         --------
-        from labric import LabricApi
+        from labric import Labric
 
-        client = LabricApi(
+        client = Labric(
             token="YOUR_TOKEN",
         )
         client.tools.write(
@@ -174,9 +174,9 @@ class ToolsClient:
 
         Examples
         --------
-        from labric import LabricApi
+        from labric import Labric
 
-        client = LabricApi(
+        client = Labric(
             token="YOUR_TOKEN",
         )
         client.tools.read(
@@ -226,9 +226,9 @@ class ToolsClient:
 
         Examples
         --------
-        from labric import LabricApi
+        from labric import Labric
 
-        client = LabricApi(
+        client = Labric(
             token="YOUR_TOKEN",
         )
         client.tools.execute_sql(
@@ -269,9 +269,9 @@ class ToolsClient:
 
         Examples
         --------
-        from labric import LabricApi
+        from labric import Labric
 
-        client = LabricApi(
+        client = Labric(
             token="YOUR_TOKEN",
         )
         client.tools.upload_file()
@@ -307,9 +307,9 @@ class ToolsClient:
 
         Examples
         --------
-        from labric import LabricApi
+        from labric import Labric
 
-        client = LabricApi(
+        client = Labric(
             token="YOUR_TOKEN",
         )
         client.tools.get_schema()
@@ -354,9 +354,9 @@ class ToolsClient:
 
         Examples
         --------
-        from labric import LabricApi
+        from labric import Labric
 
-        client = LabricApi(
+        client = Labric(
             token="YOUR_TOKEN",
         )
         client.tools.list_files()
@@ -394,9 +394,9 @@ class ToolsClient:
 
         Examples
         --------
-        from labric import LabricApi
+        from labric import Labric
 
-        client = LabricApi(
+        client = Labric(
             token="YOUR_TOKEN",
         )
         client.tools.get_file_content(
@@ -431,9 +431,9 @@ class ToolsClient:
 
         Examples
         --------
-        from labric import LabricApi
+        from labric import Labric
 
-        client = LabricApi(
+        client = Labric(
             token="YOUR_TOKEN",
         )
         client.tools.revert_job_execution(
@@ -482,9 +482,9 @@ class ToolsClient:
 
         Examples
         --------
-        from labric import LabricApi
+        from labric import Labric
 
-        client = LabricApi(
+        client = Labric(
             token="YOUR_TOKEN",
         )
         client.tools.batch_write(
@@ -581,9 +581,9 @@ class AsyncToolsClient:
         --------
         import asyncio
 
-        from labric import AsyncLabricApi
+        from labric import AsyncLabric
 
-        client = AsyncLabricApi(
+        client = AsyncLabric(
             token="YOUR_TOKEN",
         )
 
@@ -657,9 +657,9 @@ class AsyncToolsClient:
         --------
         import asyncio
 
-        from labric import AsyncLabricApi
+        from labric import AsyncLabric
 
-        client = AsyncLabricApi(
+        client = AsyncLabric(
             token="YOUR_TOKEN",
         )
 
@@ -717,9 +717,9 @@ class AsyncToolsClient:
         --------
         import asyncio
 
-        from labric import AsyncLabricApi
+        from labric import AsyncLabric
 
-        client = AsyncLabricApi(
+        client = AsyncLabric(
             token="YOUR_TOKEN",
         )
 
@@ -768,9 +768,9 @@ class AsyncToolsClient:
         --------
         import asyncio
 
-        from labric import AsyncLabricApi
+        from labric import AsyncLabric
 
-        client = AsyncLabricApi(
+        client = AsyncLabric(
             token="YOUR_TOKEN",
         )
 
@@ -814,9 +814,9 @@ class AsyncToolsClient:
         --------
         import asyncio
 
-        from labric import AsyncLabricApi
+        from labric import AsyncLabric
 
-        client = AsyncLabricApi(
+        client = AsyncLabric(
             token="YOUR_TOKEN",
         )
 
@@ -869,9 +869,9 @@ class AsyncToolsClient:
         --------
         import asyncio
 
-        from labric import AsyncLabricApi
+        from labric import AsyncLabric
 
-        client = AsyncLabricApi(
+        client = AsyncLabric(
             token="YOUR_TOKEN",
         )
 
@@ -917,9 +917,9 @@ class AsyncToolsClient:
         --------
         import asyncio
 
-        from labric import AsyncLabricApi
+        from labric import AsyncLabric
 
-        client = AsyncLabricApi(
+        client = AsyncLabric(
             token="YOUR_TOKEN",
         )
 
@@ -962,9 +962,9 @@ class AsyncToolsClient:
         --------
         import asyncio
 
-        from labric import AsyncLabricApi
+        from labric import AsyncLabric
 
-        client = AsyncLabricApi(
+        client = AsyncLabric(
             token="YOUR_TOKEN",
         )
 
@@ -1021,9 +1021,9 @@ class AsyncToolsClient:
         --------
         import asyncio
 
-        from labric import AsyncLabricApi
+        from labric import AsyncLabric
 
-        client = AsyncLabricApi(
+        client = AsyncLabric(
             token="YOUR_TOKEN",
         )
 

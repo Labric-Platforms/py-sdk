@@ -32,12 +32,12 @@ automatically if one is not provided.
 <dd>
 
 ```python
-from labric import LabricApi
-from labric.environment import LabricApiEnvironment
+from labric import Labric
+from labric.environment import LabricEnvironment
 
-client = LabricApi(
+client = Labric(
     token="<token>",
-    environment=LabricApiEnvironment.DEFAULT,
+    environment=LabricEnvironment.DEFAULT,
 )
 
 client.tools.write(
@@ -196,12 +196,12 @@ to retrieve all matching records.
 <dd>
 
 ```python
-from labric import LabricApi
-from labric.environment import LabricApiEnvironment
+from labric import Labric
+from labric.environment import LabricEnvironment
 
-client = LabricApi(
+client = Labric(
     token="<token>",
-    environment=LabricApiEnvironment.DEFAULT,
+    environment=LabricEnvironment.DEFAULT,
 )
 
 client.tools.read(
@@ -301,12 +301,12 @@ column).
 <dd>
 
 ```python
-from labric import LabricApi
-from labric.environment import LabricApiEnvironment
+from labric import Labric
+from labric.environment import LabricEnvironment
 
-client = LabricApi(
+client = Labric(
     token="<token>",
-    environment=LabricApiEnvironment.DEFAULT,
+    environment=LabricEnvironment.DEFAULT,
 )
 
 client.tools.execute_sql(
@@ -386,12 +386,12 @@ job_execution_id is provided, records provenance linking the file to that execut
 <dd>
 
 ```python
-from labric import LabricApi
-from labric.environment import LabricApiEnvironment
+from labric import Labric
+from labric.environment import LabricEnvironment
 
-client = LabricApi(
+client = Labric(
     token="<token>",
-    environment=LabricApiEnvironment.DEFAULT,
+    environment=LabricEnvironment.DEFAULT,
 )
 
 client.tools.upload_file(
@@ -475,12 +475,12 @@ populate and how rows link.
 <dd>
 
 ```python
-from labric import LabricApi
-from labric.environment import LabricApiEnvironment
+from labric import Labric
+from labric.environment import LabricEnvironment
 
-client = LabricApi(
+client = Labric(
     token="<token>",
-    environment=LabricApiEnvironment.DEFAULT,
+    environment=LabricEnvironment.DEFAULT,
 )
 
 client.tools.get_schema()
@@ -543,12 +543,12 @@ file's raw contents.
 <dd>
 
 ```python
-from labric import LabricApi
-from labric.environment import LabricApiEnvironment
+from labric import Labric
+from labric.environment import LabricEnvironment
 
-client = LabricApi(
+client = Labric(
     token="<token>",
-    environment=LabricApiEnvironment.DEFAULT,
+    environment=LabricEnvironment.DEFAULT,
 )
 
 client.tools.list_files()
@@ -642,12 +642,12 @@ fetch the full bytes via the URL when needed.
 <dd>
 
 ```python
-from labric import LabricApi
-from labric.environment import LabricApiEnvironment
+from labric import Labric
+from labric.environment import LabricEnvironment
 
-client = LabricApi(
+client = Labric(
     token="<token>",
-    environment=LabricApiEnvironment.DEFAULT,
+    environment=LabricEnvironment.DEFAULT,
 )
 
 client.tools.get_file_content(
@@ -720,12 +720,12 @@ warnings in the result.
 <dd>
 
 ```python
-from labric import LabricApi
-from labric.environment import LabricApiEnvironment
+from labric import Labric
+from labric.environment import LabricEnvironment
 
-client = LabricApi(
+client = Labric(
     token="<token>",
-    environment=LabricApiEnvironment.DEFAULT,
+    environment=LabricEnvironment.DEFAULT,
 )
 
 client.tools.revert_job_execution(
@@ -804,12 +804,12 @@ reverted as a unit.
 <dd>
 
 ```python
-from labric import LabricApi
-from labric.environment import LabricApiEnvironment
+from labric import Labric
+from labric.environment import LabricEnvironment
 
-client = LabricApi(
+client = Labric(
     token="<token>",
-    environment=LabricApiEnvironment.DEFAULT,
+    environment=LabricEnvironment.DEFAULT,
 )
 
 client.tools.batch_write(
