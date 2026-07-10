@@ -1,6 +1,6 @@
 # Labric Python SDK
 
-The official Python library for the [Labric](https://platform.labric.co) API.
+The official Python library for the [Labric](https://labric.co) API.
 
 ## Installation
 
