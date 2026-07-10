@@ -18,6 +18,7 @@ if typing.TYPE_CHECKING:
     from .table_summary import TableSummary
     from .tools_file_content_schema import ToolsFileContentSchema
     from .tools_file_info_schema import ToolsFileInfoSchema
+    from .validation_error_schema import ValidationErrorSchema
     from .write_plan import WritePlan
 _dynamic_imports: typing.Dict[str, str] = {
     "BatchWriteOptions": ".batch_write_options",
@@ -32,6 +33,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "TableSummary": ".table_summary",
     "ToolsFileContentSchema": ".tools_file_content_schema",
     "ToolsFileInfoSchema": ".tools_file_info_schema",
+    "ValidationErrorSchema": ".validation_error_schema",
     "WritePlan": ".write_plan",
 }
 
@@ -70,5 +72,6 @@ __all__ = [
     "TableSummary",
     "ToolsFileContentSchema",
     "ToolsFileInfoSchema",
+    "ValidationErrorSchema",
     "WritePlan",
 ]

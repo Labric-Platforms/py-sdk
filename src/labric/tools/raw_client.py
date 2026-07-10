@@ -12,29 +12,13 @@ from ..core.parse_error import ParsingError
 from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
-from ..errors.bad_gateway_error import BadGatewayError
 from ..errors.bad_request_error import BadRequestError
-from ..errors.conflict_error import ConflictError
 from ..errors.forbidden_error import ForbiddenError
-from ..errors.gateway_timeout_error import GatewayTimeoutError
-from ..errors.gone_error import GoneError
-from ..errors.im_a_teapot_error import ImATeapotError
 from ..errors.internal_server_error import InternalServerError
-from ..errors.length_required_error import LengthRequiredError
-from ..errors.method_not_allowed_error import MethodNotAllowedError
-from ..errors.not_acceptable_error import NotAcceptableError
 from ..errors.not_found_error import NotFoundError
-from ..errors.not_implemented_error import NotImplementedError
-from ..errors.payment_required_error import PaymentRequiredError
-from ..errors.precondition_failed_error import PreconditionFailedError
-from ..errors.proxy_authentication_required_error import ProxyAuthenticationRequiredError
-from ..errors.range_not_satisfiable_error import RangeNotSatisfiableError
-from ..errors.request_timeout_error import RequestTimeoutError
 from ..errors.service_unavailable_error import ServiceUnavailableError
-from ..errors.too_early_error import TooEarlyError
-from ..errors.too_many_requests_error import TooManyRequestsError
 from ..errors.unauthorized_error import UnauthorizedError
-from ..errors.unavailable_for_legal_reasons_error import UnavailableForLegalReasonsError
+from ..errors.unprocessable_entity_error import UnprocessableEntityError
 from ..types.batch_write_options import BatchWriteOptions
 from ..types.batch_write_response import BatchWriteResponse
 from ..types.error_schema import ErrorSchema
@@ -44,6 +28,7 @@ from ..types.revert_result_schema import RevertResultSchema
 from ..types.table_schema_info_schema import TableSchemaInfoSchema
 from ..types.tools_file_content_schema import ToolsFileContentSchema
 from ..types.tools_file_info_schema import ToolsFileInfoSchema
+from ..types.validation_error_schema import ValidationErrorSchema
 from .types.labric_read_schema_mode import LabricReadSchemaMode
 from .types.labric_read_schema_target_type import LabricReadSchemaTargetType
 from .types.labric_write_schema_target_type import LabricWriteSchemaTargetType
@@ -178,17 +163,6 @@ class RawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 402:
-                raise PaymentRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
             if _response.status_code == 403:
                 raise ForbiddenError(
                     headers=dict(_response.headers),
@@ -211,195 +185,19 @@ class RawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 405:
-                raise MethodNotAllowedError(
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        ErrorSchema,
+                        ValidationErrorSchema,
                         parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 406:
-                raise NotAcceptableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 407:
-                raise ProxyAuthenticationRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 408:
-                raise RequestTimeoutError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 409:
-                raise ConflictError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 410:
-                raise GoneError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 411:
-                raise LengthRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 412:
-                raise PreconditionFailedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 416:
-                raise RangeNotSatisfiableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 418:
-                raise ImATeapotError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 425:
-                raise TooEarlyError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 451:
-                raise UnavailableForLegalReasonsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
+                            type_=ValidationErrorSchema,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
                 )
             if _response.status_code == 500:
                 raise InternalServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 501:
-                raise NotImplementedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 502:
-                raise BadGatewayError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 503:
-                raise ServiceUnavailableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 504:
-                raise GatewayTimeoutError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,
@@ -503,17 +301,6 @@ class RawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 402:
-                raise PaymentRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
             if _response.status_code == 403:
                 raise ForbiddenError(
                     headers=dict(_response.headers),
@@ -536,195 +323,19 @@ class RawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 405:
-                raise MethodNotAllowedError(
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        ErrorSchema,
+                        ValidationErrorSchema,
                         parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 406:
-                raise NotAcceptableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 407:
-                raise ProxyAuthenticationRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 408:
-                raise RequestTimeoutError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 409:
-                raise ConflictError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 410:
-                raise GoneError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 411:
-                raise LengthRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 412:
-                raise PreconditionFailedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 416:
-                raise RangeNotSatisfiableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 418:
-                raise ImATeapotError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 425:
-                raise TooEarlyError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 451:
-                raise UnavailableForLegalReasonsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
+                            type_=ValidationErrorSchema,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
                 )
             if _response.status_code == 500:
                 raise InternalServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 501:
-                raise NotImplementedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 502:
-                raise BadGatewayError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 503:
-                raise ServiceUnavailableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 504:
-                raise GatewayTimeoutError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,
@@ -819,17 +430,6 @@ class RawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 402:
-                raise PaymentRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
             if _response.status_code == 403:
                 raise ForbiddenError(
                     headers=dict(_response.headers),
@@ -852,145 +452,13 @@ class RawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 405:
-                raise MethodNotAllowedError(
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        ErrorSchema,
+                        ValidationErrorSchema,
                         parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 406:
-                raise NotAcceptableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 407:
-                raise ProxyAuthenticationRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 408:
-                raise RequestTimeoutError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 409:
-                raise ConflictError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 410:
-                raise GoneError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 411:
-                raise LengthRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 412:
-                raise PreconditionFailedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 416:
-                raise RangeNotSatisfiableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 418:
-                raise ImATeapotError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 425:
-                raise TooEarlyError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 451:
-                raise UnavailableForLegalReasonsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
+                            type_=ValidationErrorSchema,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -1006,41 +474,8 @@ class RawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 501:
-                raise NotImplementedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 502:
-                raise BadGatewayError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
             if _response.status_code == 503:
                 raise ServiceUnavailableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 504:
-                raise GatewayTimeoutError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,
@@ -1133,17 +568,6 @@ class RawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 402:
-                raise PaymentRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
             if _response.status_code == 403:
                 raise ForbiddenError(
                     headers=dict(_response.headers),
@@ -1166,195 +590,19 @@ class RawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 405:
-                raise MethodNotAllowedError(
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        ErrorSchema,
+                        ValidationErrorSchema,
                         parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 406:
-                raise NotAcceptableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 407:
-                raise ProxyAuthenticationRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 408:
-                raise RequestTimeoutError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 409:
-                raise ConflictError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 410:
-                raise GoneError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 411:
-                raise LengthRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 412:
-                raise PreconditionFailedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 416:
-                raise RangeNotSatisfiableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 418:
-                raise ImATeapotError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 425:
-                raise TooEarlyError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 451:
-                raise UnavailableForLegalReasonsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
+                            type_=ValidationErrorSchema,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
                 )
             if _response.status_code == 500:
                 raise InternalServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 501:
-                raise NotImplementedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 502:
-                raise BadGatewayError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 503:
-                raise ServiceUnavailableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 504:
-                raise GatewayTimeoutError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,
@@ -1434,17 +682,6 @@ class RawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 402:
-                raise PaymentRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
             if _response.status_code == 403:
                 raise ForbiddenError(
                     headers=dict(_response.headers),
@@ -1467,195 +704,19 @@ class RawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 405:
-                raise MethodNotAllowedError(
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        ErrorSchema,
+                        ValidationErrorSchema,
                         parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 406:
-                raise NotAcceptableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 407:
-                raise ProxyAuthenticationRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 408:
-                raise RequestTimeoutError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 409:
-                raise ConflictError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 410:
-                raise GoneError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 411:
-                raise LengthRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 412:
-                raise PreconditionFailedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 416:
-                raise RangeNotSatisfiableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 418:
-                raise ImATeapotError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 425:
-                raise TooEarlyError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 451:
-                raise UnavailableForLegalReasonsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
+                            type_=ValidationErrorSchema,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
                 )
             if _response.status_code == 500:
                 raise InternalServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 501:
-                raise NotImplementedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 502:
-                raise BadGatewayError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 503:
-                raise ServiceUnavailableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 504:
-                raise GatewayTimeoutError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,
@@ -1752,17 +813,6 @@ class RawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 402:
-                raise PaymentRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
             if _response.status_code == 403:
                 raise ForbiddenError(
                     headers=dict(_response.headers),
@@ -1785,195 +835,19 @@ class RawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 405:
-                raise MethodNotAllowedError(
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        ErrorSchema,
+                        ValidationErrorSchema,
                         parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 406:
-                raise NotAcceptableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 407:
-                raise ProxyAuthenticationRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 408:
-                raise RequestTimeoutError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 409:
-                raise ConflictError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 410:
-                raise GoneError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 411:
-                raise LengthRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 412:
-                raise PreconditionFailedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 416:
-                raise RangeNotSatisfiableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 418:
-                raise ImATeapotError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 425:
-                raise TooEarlyError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 451:
-                raise UnavailableForLegalReasonsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
+                            type_=ValidationErrorSchema,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
                 )
             if _response.status_code == 500:
                 raise InternalServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 501:
-                raise NotImplementedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 502:
-                raise BadGatewayError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 503:
-                raise ServiceUnavailableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 504:
-                raise GatewayTimeoutError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,
@@ -2051,17 +925,6 @@ class RawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 402:
-                raise PaymentRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
             if _response.status_code == 403:
                 raise ForbiddenError(
                     headers=dict(_response.headers),
@@ -2084,195 +947,19 @@ class RawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 405:
-                raise MethodNotAllowedError(
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        ErrorSchema,
+                        ValidationErrorSchema,
                         parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 406:
-                raise NotAcceptableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 407:
-                raise ProxyAuthenticationRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 408:
-                raise RequestTimeoutError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 409:
-                raise ConflictError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 410:
-                raise GoneError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 411:
-                raise LengthRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 412:
-                raise PreconditionFailedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 416:
-                raise RangeNotSatisfiableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 418:
-                raise ImATeapotError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 425:
-                raise TooEarlyError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 451:
-                raise UnavailableForLegalReasonsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
+                            type_=ValidationErrorSchema,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
                 )
             if _response.status_code == 500:
                 raise InternalServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 501:
-                raise NotImplementedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 502:
-                raise BadGatewayError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 503:
-                raise ServiceUnavailableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 504:
-                raise GatewayTimeoutError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,
@@ -2351,17 +1038,6 @@ class RawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 402:
-                raise PaymentRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
             if _response.status_code == 403:
                 raise ForbiddenError(
                     headers=dict(_response.headers),
@@ -2384,195 +1060,19 @@ class RawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 405:
-                raise MethodNotAllowedError(
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        ErrorSchema,
+                        ValidationErrorSchema,
                         parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 406:
-                raise NotAcceptableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 407:
-                raise ProxyAuthenticationRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 408:
-                raise RequestTimeoutError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 409:
-                raise ConflictError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 410:
-                raise GoneError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 411:
-                raise LengthRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 412:
-                raise PreconditionFailedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 416:
-                raise RangeNotSatisfiableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 418:
-                raise ImATeapotError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 425:
-                raise TooEarlyError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 451:
-                raise UnavailableForLegalReasonsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
+                            type_=ValidationErrorSchema,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
                 )
             if _response.status_code == 500:
                 raise InternalServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 501:
-                raise NotImplementedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 502:
-                raise BadGatewayError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 503:
-                raise ServiceUnavailableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 504:
-                raise GatewayTimeoutError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,
@@ -2675,17 +1175,6 @@ class RawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 402:
-                raise PaymentRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
             if _response.status_code == 403:
                 raise ForbiddenError(
                     headers=dict(_response.headers),
@@ -2708,195 +1197,19 @@ class RawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 405:
-                raise MethodNotAllowedError(
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        ErrorSchema,
+                        ValidationErrorSchema,
                         parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 406:
-                raise NotAcceptableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 407:
-                raise ProxyAuthenticationRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 408:
-                raise RequestTimeoutError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 409:
-                raise ConflictError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 410:
-                raise GoneError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 411:
-                raise LengthRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 412:
-                raise PreconditionFailedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 416:
-                raise RangeNotSatisfiableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 418:
-                raise ImATeapotError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 425:
-                raise TooEarlyError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 451:
-                raise UnavailableForLegalReasonsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
+                            type_=ValidationErrorSchema,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
                 )
             if _response.status_code == 500:
                 raise InternalServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 501:
-                raise NotImplementedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 502:
-                raise BadGatewayError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 503:
-                raise ServiceUnavailableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 504:
-                raise GatewayTimeoutError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,
@@ -3041,17 +1354,6 @@ class AsyncRawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 402:
-                raise PaymentRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
             if _response.status_code == 403:
                 raise ForbiddenError(
                     headers=dict(_response.headers),
@@ -3074,195 +1376,19 @@ class AsyncRawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 405:
-                raise MethodNotAllowedError(
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        ErrorSchema,
+                        ValidationErrorSchema,
                         parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 406:
-                raise NotAcceptableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 407:
-                raise ProxyAuthenticationRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 408:
-                raise RequestTimeoutError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 409:
-                raise ConflictError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 410:
-                raise GoneError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 411:
-                raise LengthRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 412:
-                raise PreconditionFailedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 416:
-                raise RangeNotSatisfiableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 418:
-                raise ImATeapotError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 425:
-                raise TooEarlyError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 451:
-                raise UnavailableForLegalReasonsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
+                            type_=ValidationErrorSchema,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
                 )
             if _response.status_code == 500:
                 raise InternalServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 501:
-                raise NotImplementedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 502:
-                raise BadGatewayError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 503:
-                raise ServiceUnavailableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 504:
-                raise GatewayTimeoutError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,
@@ -3366,17 +1492,6 @@ class AsyncRawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 402:
-                raise PaymentRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
             if _response.status_code == 403:
                 raise ForbiddenError(
                     headers=dict(_response.headers),
@@ -3399,195 +1514,19 @@ class AsyncRawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 405:
-                raise MethodNotAllowedError(
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        ErrorSchema,
+                        ValidationErrorSchema,
                         parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 406:
-                raise NotAcceptableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 407:
-                raise ProxyAuthenticationRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 408:
-                raise RequestTimeoutError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 409:
-                raise ConflictError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 410:
-                raise GoneError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 411:
-                raise LengthRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 412:
-                raise PreconditionFailedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 416:
-                raise RangeNotSatisfiableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 418:
-                raise ImATeapotError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 425:
-                raise TooEarlyError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 451:
-                raise UnavailableForLegalReasonsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
+                            type_=ValidationErrorSchema,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
                 )
             if _response.status_code == 500:
                 raise InternalServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 501:
-                raise NotImplementedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 502:
-                raise BadGatewayError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 503:
-                raise ServiceUnavailableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 504:
-                raise GatewayTimeoutError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,
@@ -3682,17 +1621,6 @@ class AsyncRawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 402:
-                raise PaymentRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
             if _response.status_code == 403:
                 raise ForbiddenError(
                     headers=dict(_response.headers),
@@ -3715,145 +1643,13 @@ class AsyncRawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 405:
-                raise MethodNotAllowedError(
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        ErrorSchema,
+                        ValidationErrorSchema,
                         parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 406:
-                raise NotAcceptableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 407:
-                raise ProxyAuthenticationRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 408:
-                raise RequestTimeoutError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 409:
-                raise ConflictError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 410:
-                raise GoneError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 411:
-                raise LengthRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 412:
-                raise PreconditionFailedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 416:
-                raise RangeNotSatisfiableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 418:
-                raise ImATeapotError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 425:
-                raise TooEarlyError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 451:
-                raise UnavailableForLegalReasonsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
+                            type_=ValidationErrorSchema,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
@@ -3869,41 +1665,8 @@ class AsyncRawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 501:
-                raise NotImplementedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 502:
-                raise BadGatewayError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
             if _response.status_code == 503:
                 raise ServiceUnavailableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 504:
-                raise GatewayTimeoutError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,
@@ -3996,17 +1759,6 @@ class AsyncRawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 402:
-                raise PaymentRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
             if _response.status_code == 403:
                 raise ForbiddenError(
                     headers=dict(_response.headers),
@@ -4029,195 +1781,19 @@ class AsyncRawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 405:
-                raise MethodNotAllowedError(
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        ErrorSchema,
+                        ValidationErrorSchema,
                         parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 406:
-                raise NotAcceptableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 407:
-                raise ProxyAuthenticationRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 408:
-                raise RequestTimeoutError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 409:
-                raise ConflictError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 410:
-                raise GoneError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 411:
-                raise LengthRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 412:
-                raise PreconditionFailedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 416:
-                raise RangeNotSatisfiableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 418:
-                raise ImATeapotError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 425:
-                raise TooEarlyError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 451:
-                raise UnavailableForLegalReasonsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
+                            type_=ValidationErrorSchema,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
                 )
             if _response.status_code == 500:
                 raise InternalServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 501:
-                raise NotImplementedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 502:
-                raise BadGatewayError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 503:
-                raise ServiceUnavailableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 504:
-                raise GatewayTimeoutError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,
@@ -4297,17 +1873,6 @@ class AsyncRawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 402:
-                raise PaymentRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
             if _response.status_code == 403:
                 raise ForbiddenError(
                     headers=dict(_response.headers),
@@ -4330,195 +1895,19 @@ class AsyncRawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 405:
-                raise MethodNotAllowedError(
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        ErrorSchema,
+                        ValidationErrorSchema,
                         parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 406:
-                raise NotAcceptableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 407:
-                raise ProxyAuthenticationRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 408:
-                raise RequestTimeoutError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 409:
-                raise ConflictError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 410:
-                raise GoneError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 411:
-                raise LengthRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 412:
-                raise PreconditionFailedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 416:
-                raise RangeNotSatisfiableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 418:
-                raise ImATeapotError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 425:
-                raise TooEarlyError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 451:
-                raise UnavailableForLegalReasonsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
+                            type_=ValidationErrorSchema,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
                 )
             if _response.status_code == 500:
                 raise InternalServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 501:
-                raise NotImplementedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 502:
-                raise BadGatewayError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 503:
-                raise ServiceUnavailableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 504:
-                raise GatewayTimeoutError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,
@@ -4615,17 +2004,6 @@ class AsyncRawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 402:
-                raise PaymentRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
             if _response.status_code == 403:
                 raise ForbiddenError(
                     headers=dict(_response.headers),
@@ -4648,195 +2026,19 @@ class AsyncRawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 405:
-                raise MethodNotAllowedError(
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        ErrorSchema,
+                        ValidationErrorSchema,
                         parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 406:
-                raise NotAcceptableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 407:
-                raise ProxyAuthenticationRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 408:
-                raise RequestTimeoutError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 409:
-                raise ConflictError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 410:
-                raise GoneError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 411:
-                raise LengthRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 412:
-                raise PreconditionFailedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 416:
-                raise RangeNotSatisfiableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 418:
-                raise ImATeapotError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 425:
-                raise TooEarlyError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 451:
-                raise UnavailableForLegalReasonsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
+                            type_=ValidationErrorSchema,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
                 )
             if _response.status_code == 500:
                 raise InternalServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 501:
-                raise NotImplementedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 502:
-                raise BadGatewayError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 503:
-                raise ServiceUnavailableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 504:
-                raise GatewayTimeoutError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,
@@ -4914,17 +2116,6 @@ class AsyncRawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 402:
-                raise PaymentRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
             if _response.status_code == 403:
                 raise ForbiddenError(
                     headers=dict(_response.headers),
@@ -4947,195 +2138,19 @@ class AsyncRawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 405:
-                raise MethodNotAllowedError(
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        ErrorSchema,
+                        ValidationErrorSchema,
                         parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 406:
-                raise NotAcceptableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 407:
-                raise ProxyAuthenticationRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 408:
-                raise RequestTimeoutError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 409:
-                raise ConflictError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 410:
-                raise GoneError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 411:
-                raise LengthRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 412:
-                raise PreconditionFailedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 416:
-                raise RangeNotSatisfiableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 418:
-                raise ImATeapotError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 425:
-                raise TooEarlyError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 451:
-                raise UnavailableForLegalReasonsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
+                            type_=ValidationErrorSchema,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
                 )
             if _response.status_code == 500:
                 raise InternalServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 501:
-                raise NotImplementedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 502:
-                raise BadGatewayError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 503:
-                raise ServiceUnavailableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 504:
-                raise GatewayTimeoutError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,
@@ -5214,17 +2229,6 @@ class AsyncRawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 402:
-                raise PaymentRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
             if _response.status_code == 403:
                 raise ForbiddenError(
                     headers=dict(_response.headers),
@@ -5247,195 +2251,19 @@ class AsyncRawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 405:
-                raise MethodNotAllowedError(
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        ErrorSchema,
+                        ValidationErrorSchema,
                         parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 406:
-                raise NotAcceptableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 407:
-                raise ProxyAuthenticationRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 408:
-                raise RequestTimeoutError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 409:
-                raise ConflictError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 410:
-                raise GoneError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 411:
-                raise LengthRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 412:
-                raise PreconditionFailedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 416:
-                raise RangeNotSatisfiableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 418:
-                raise ImATeapotError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 425:
-                raise TooEarlyError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 451:
-                raise UnavailableForLegalReasonsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
+                            type_=ValidationErrorSchema,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
                 )
             if _response.status_code == 500:
                 raise InternalServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 501:
-                raise NotImplementedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 502:
-                raise BadGatewayError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 503:
-                raise ServiceUnavailableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 504:
-                raise GatewayTimeoutError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,
@@ -5538,17 +2366,6 @@ class AsyncRawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 402:
-                raise PaymentRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
             if _response.status_code == 403:
                 raise ForbiddenError(
                     headers=dict(_response.headers),
@@ -5571,195 +2388,19 @@ class AsyncRawToolsClient:
                         ),
                     ),
                 )
-            if _response.status_code == 405:
-                raise MethodNotAllowedError(
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
                     headers=dict(_response.headers),
                     body=typing.cast(
-                        ErrorSchema,
+                        ValidationErrorSchema,
                         parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 406:
-                raise NotAcceptableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 407:
-                raise ProxyAuthenticationRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 408:
-                raise RequestTimeoutError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 409:
-                raise ConflictError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 410:
-                raise GoneError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 411:
-                raise LengthRequiredError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 412:
-                raise PreconditionFailedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 416:
-                raise RangeNotSatisfiableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 418:
-                raise ImATeapotError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 425:
-                raise TooEarlyError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 429:
-                raise TooManyRequestsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 451:
-                raise UnavailableForLegalReasonsError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
+                            type_=ValidationErrorSchema,  # type: ignore
                             object_=_response.json(),
                         ),
                     ),
                 )
             if _response.status_code == 500:
                 raise InternalServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 501:
-                raise NotImplementedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 502:
-                raise BadGatewayError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 503:
-                raise ServiceUnavailableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 504:
-                raise GatewayTimeoutError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,
