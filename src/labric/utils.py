@@ -5,8 +5,8 @@ def get_or_create_operation(
     client,
     step_name: str,
     step_params: dict[str, Any],
-    table_id: int,
     organization_id: str,
+    table_id: int,
     start_time: str,
     end_time: str | None = None,
     has_effect: bool = True,
@@ -88,12 +88,14 @@ def record_process_step(
     Set has_effect=False (or use record_measurement_step) for characterizations that don't
     change sample state.
     """
+    if not rows:
+        return []
     operation = get_or_create_operation(
         client,
         step_name,
         step_params,
-        table_id,
         organization_id,
+        table_id,
         start_time,
         end_time,
         has_effect,
