@@ -5,7 +5,7 @@
   "generatorConfig": {
     "client_class_name": "Labric"
   },
-  "originGitCommit": "b05af2ea9e571a87f08c317bcb0f8eee3a4f8329",
+  "originGitCommit": "5c5f365be1841ffb20fcc5b7baec7be968cf0407",
   "originGitCommitIsDirty": false,
   "invokedBy": "ci",
   "ciProvider": "github"
