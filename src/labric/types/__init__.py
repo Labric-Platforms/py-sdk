@@ -12,12 +12,14 @@ if typing.TYPE_CHECKING:
     from .column_info_schema import ColumnInfoSchema
     from .error_schema import ErrorSchema
     from .labric_upload_file_schema import LabricUploadFileSchema
+    from .predict_response_schema import PredictResponseSchema
     from .query_result import QueryResult
     from .revert_result_schema import RevertResultSchema
     from .table_schema_info_schema import TableSchemaInfoSchema
     from .table_summary import TableSummary
     from .tools_file_content_schema import ToolsFileContentSchema
     from .tools_file_info_schema import ToolsFileInfoSchema
+    from .tools_ml_model_schema import ToolsMlModelSchema
     from .validation_error_schema import ValidationErrorSchema
     from .write_plan import WritePlan
 _dynamic_imports: typing.Dict[str, str] = {
@@ -27,12 +29,14 @@ _dynamic_imports: typing.Dict[str, str] = {
     "ColumnInfoSchema": ".column_info_schema",
     "ErrorSchema": ".error_schema",
     "LabricUploadFileSchema": ".labric_upload_file_schema",
+    "PredictResponseSchema": ".predict_response_schema",
     "QueryResult": ".query_result",
     "RevertResultSchema": ".revert_result_schema",
     "TableSchemaInfoSchema": ".table_schema_info_schema",
     "TableSummary": ".table_summary",
     "ToolsFileContentSchema": ".tools_file_content_schema",
     "ToolsFileInfoSchema": ".tools_file_info_schema",
+    "ToolsMlModelSchema": ".tools_ml_model_schema",
     "ValidationErrorSchema": ".validation_error_schema",
     "WritePlan": ".write_plan",
 }
@@ -66,12 +70,14 @@ __all__ = [
     "ColumnInfoSchema",
     "ErrorSchema",
     "LabricUploadFileSchema",
+    "PredictResponseSchema",
     "QueryResult",
     "RevertResultSchema",
     "TableSchemaInfoSchema",
     "TableSummary",
     "ToolsFileContentSchema",
     "ToolsFileInfoSchema",
+    "ToolsMlModelSchema",
     "ValidationErrorSchema",
     "WritePlan",
 ]

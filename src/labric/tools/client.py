@@ -8,11 +8,13 @@ from ..core.request_options import RequestOptions
 from ..types.batch_write_options import BatchWriteOptions
 from ..types.batch_write_response import BatchWriteResponse
 from ..types.labric_upload_file_schema import LabricUploadFileSchema
+from ..types.predict_response_schema import PredictResponseSchema
 from ..types.query_result import QueryResult
 from ..types.revert_result_schema import RevertResultSchema
 from ..types.table_schema_info_schema import TableSchemaInfoSchema
 from ..types.tools_file_content_schema import ToolsFileContentSchema
 from ..types.tools_file_info_schema import ToolsFileInfoSchema
+from ..types.tools_ml_model_schema import ToolsMlModelSchema
 from .raw_client import AsyncRawToolsClient, RawToolsClient
 from .types.labric_read_schema_mode import LabricReadSchemaMode
 from .types.labric_read_schema_target_type import LabricReadSchemaTargetType
@@ -492,6 +494,89 @@ class ToolsClient:
         )
         """
         _response = self._raw_client.batch_write(tables=tables, options=options, request_options=request_options)
+        return _response.data
+
+    def predict(
+        self,
+        *,
+        data: typing.Sequence[typing.Dict[str, typing.Any]],
+        ml_model_id: typing.Optional[str] = OMIT,
+        ml_model_name: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> PredictResponseSchema:
+        """
+        Run predictions with a trained ML model.
+
+        Identify the model by ml_model_id, or by ml_model_name (the name of a
+        non-archived model). Each row in data maps the model's feature columns to
+        values -- use the ml-models tool to discover models and the columns each
+        expects. Returns one prediction per input row, plus per-class
+        probabilities for classifiers.
+
+        Parameters
+        ----------
+        data : typing.Sequence[typing.Dict[str, typing.Any]]
+
+        ml_model_id : typing.Optional[str]
+
+        ml_model_name : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        PredictResponseSchema
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.tools.predict(
+            data=[{"key": "value"}],
+        )
+        """
+        _response = self._raw_client.predict(
+            data=data, ml_model_id=ml_model_id, ml_model_name=ml_model_name, request_options=request_options
+        )
+        return _response.data
+
+    def list_ml_models(
+        self, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[ToolsMlModelSchema]:
+        """
+        List the organization's ML models and the inputs each expects.
+
+        Returns each non-archived model with its serving status and prediction
+        interface: feature_columns (plus image_columns for image models) are the
+        fields each data row passed to the predict tool should contain, and
+        target_column is what the model predicts. Only models with status 'ready'
+        can serve predictions.
+
+        Parameters
+        ----------
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[ToolsMlModelSchema]
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.tools.list_ml_models()
+        """
+        _response = self._raw_client.list_ml_models(request_options=request_options)
         return _response.data
 
 
@@ -1037,4 +1122,103 @@ class AsyncToolsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.batch_write(tables=tables, options=options, request_options=request_options)
+        return _response.data
+
+    async def predict(
+        self,
+        *,
+        data: typing.Sequence[typing.Dict[str, typing.Any]],
+        ml_model_id: typing.Optional[str] = OMIT,
+        ml_model_name: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> PredictResponseSchema:
+        """
+        Run predictions with a trained ML model.
+
+        Identify the model by ml_model_id, or by ml_model_name (the name of a
+        non-archived model). Each row in data maps the model's feature columns to
+        values -- use the ml-models tool to discover models and the columns each
+        expects. Returns one prediction per input row, plus per-class
+        probabilities for classifiers.
+
+        Parameters
+        ----------
+        data : typing.Sequence[typing.Dict[str, typing.Any]]
+
+        ml_model_id : typing.Optional[str]
+
+        ml_model_name : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        PredictResponseSchema
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.tools.predict(
+                data=[{"key": "value"}],
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.predict(
+            data=data, ml_model_id=ml_model_id, ml_model_name=ml_model_name, request_options=request_options
+        )
+        return _response.data
+
+    async def list_ml_models(
+        self, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> typing.List[ToolsMlModelSchema]:
+        """
+        List the organization's ML models and the inputs each expects.
+
+        Returns each non-archived model with its serving status and prediction
+        interface: feature_columns (plus image_columns for image models) are the
+        fields each data row passed to the predict tool should contain, and
+        target_column is what the model predicts. Only models with status 'ready'
+        can serve predictions.
+
+        Parameters
+        ----------
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        typing.List[ToolsMlModelSchema]
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.tools.list_ml_models()
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.list_ml_models(request_options=request_options)
         return _response.data

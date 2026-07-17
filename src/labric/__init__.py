@@ -13,16 +13,19 @@ if typing.TYPE_CHECKING:
         ColumnInfoSchema,
         ErrorSchema,
         LabricUploadFileSchema,
+        PredictResponseSchema,
         QueryResult,
         RevertResultSchema,
         TableSchemaInfoSchema,
         TableSummary,
         ToolsFileContentSchema,
         ToolsFileInfoSchema,
+        ToolsMlModelSchema,
         ValidationErrorSchema,
         WritePlan,
     )
     from .errors import (
+        BadGatewayError,
         BadRequestError,
         ForbiddenError,
         InternalServerError,
@@ -38,6 +41,7 @@ if typing.TYPE_CHECKING:
     from .tools import LabricReadSchemaMode, LabricReadSchemaTargetType, LabricWriteSchemaTargetType
 _dynamic_imports: typing.Dict[str, str] = {
     "AsyncLabric": ".client",
+    "BadGatewayError": ".errors",
     "BadRequestError": ".errors",
     "BatchWriteOptions": ".types",
     "BatchWriteOptionsMode": ".types",
@@ -55,6 +59,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "LabricUploadFileSchema": ".types",
     "LabricWriteSchemaTargetType": ".tools",
     "NotFoundError": ".errors",
+    "PredictResponseSchema": ".types",
     "QueryResult": ".types",
     "RevertResultSchema": ".types",
     "ServiceUnavailableError": ".errors",
@@ -62,6 +67,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "TableSummary": ".types",
     "ToolsFileContentSchema": ".types",
     "ToolsFileInfoSchema": ".types",
+    "ToolsMlModelSchema": ".types",
     "UnauthorizedError": ".errors",
     "UnprocessableEntityError": ".errors",
     "ValidationErrorSchema": ".types",
@@ -93,6 +99,7 @@ def __dir__():
 
 __all__ = [
     "AsyncLabric",
+    "BadGatewayError",
     "BadRequestError",
     "BatchWriteOptions",
     "BatchWriteOptionsMode",
@@ -110,6 +117,7 @@ __all__ = [
     "LabricUploadFileSchema",
     "LabricWriteSchemaTargetType",
     "NotFoundError",
+    "PredictResponseSchema",
     "QueryResult",
     "RevertResultSchema",
     "ServiceUnavailableError",
@@ -117,6 +125,7 @@ __all__ = [
     "TableSummary",
     "ToolsFileContentSchema",
     "ToolsFileInfoSchema",
+    "ToolsMlModelSchema",
     "UnauthorizedError",
     "UnprocessableEntityError",
     "ValidationErrorSchema",
