@@ -13,6 +13,7 @@ if typing.TYPE_CHECKING:
     from .error_schema import ErrorSchema
     from .labric_upload_file_schema import LabricUploadFileSchema
     from .predict_response_schema import PredictResponseSchema
+    from .predicted_annotation_schema import PredictedAnnotationSchema
     from .query_result import QueryResult
     from .revert_result_schema import RevertResultSchema
     from .table_schema_info_schema import TableSchemaInfoSchema
@@ -30,6 +31,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "ErrorSchema": ".error_schema",
     "LabricUploadFileSchema": ".labric_upload_file_schema",
     "PredictResponseSchema": ".predict_response_schema",
+    "PredictedAnnotationSchema": ".predicted_annotation_schema",
     "QueryResult": ".query_result",
     "RevertResultSchema": ".revert_result_schema",
     "TableSchemaInfoSchema": ".table_schema_info_schema",
@@ -71,6 +73,7 @@ __all__ = [
     "ErrorSchema",
     "LabricUploadFileSchema",
     "PredictResponseSchema",
+    "PredictedAnnotationSchema",
     "QueryResult",
     "RevertResultSchema",
     "TableSchemaInfoSchema",
