@@ -12,7 +12,7 @@ class PredictResponseSchema(UniversalBaseModel):
     probabilities: typing.Optional[typing.List[typing.Dict[str, typing.Any]]] = None
     model_id: str
     model_name: str
-    annotations: typing.Optional[typing.List[typing.Optional[PredictedAnnotationSchema]]] = None
+    annotations: typing.Optional[typing.List[PredictedAnnotationSchema]] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
