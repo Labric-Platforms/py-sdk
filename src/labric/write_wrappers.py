@@ -1,11 +1,11 @@
-"""Helpers for writing records to Labric tables.
+"""Helpers for writing records to Labric tables, mixed into the exported client (see client.py).
 
-write_core_table and write_labric_table send data to the write endpoint in a single
-request by default. Set rows_per_batch to split a large data list across multiple
-requests instead, e.g.:
+`client.write_core_table` and `client.write_labric_table` send data to the write endpoint in a
+single request by default. Set rows_per_batch to split a large data list across multiple requests
+instead, e.g.:
 
-    write_labric_table(
-        client, "measurements", data=rows, rows_per_batch=1000,
+    client.write_labric_table(
+        "measurements", data=rows, rows_per_batch=1000,
         on_progress=lambda written, total: logger.info(f"{written}/{total} written"),
     )
 
@@ -46,62 +46,68 @@ DEFAULT_ROWS_PER_BATCH = 5000
 MAX_BATCH_BYTES = 2_000_000
 
 
-def write_core_table(
-    client,
-    target_name: str,
-    data: list[dict[str, Any]],
-    params_to_match_for_update: list[str] | None = None,
-    mode: str = "create-or-update",
-    defaults: dict[str, str] | None = None,
-    collect_output: bool = True,
-    rows_per_batch: int | None = None,
-    on_progress: Callable[[int, int], None] | None = None,
-    job_execution_id: str | None = None,
-) -> list[dict[str, Any]]:
-    """Write records to a core table, splitting across multiple requests of rows_per_batch rows when set."""
-    return _write(
-        client,
-        data,
-        rows_per_batch,
-        on_progress,
-        job_execution_id,
-        target_type="core-table",
-        target_name=target_name,
-        mode=mode,
-        params_to_match_for_update=params_to_match_for_update,
-        defaults=defaults,
-        collect_output=collect_output,
-    )
+class WriteWrappers:
+    """`tools.write` shorthands, mixed into the exported client (see client.py).
 
+    `job_execution_id` falls back to the environment variable the job runner sets, so
+    writes made from a job script attach to that execution without being told about it.
+    """
 
-def write_labric_table(
-    client,
-    target_name: str,
-    data: list[dict[str, Any]],
-    params_to_match_for_update: list[str] | None = None,
-    mode: str = "create-or-update",
-    defaults: dict[str, str] | None = None,
-    batch_insert_ok: bool = False,
-    collect_output: bool = True,
-    rows_per_batch: int | None = None,
-    on_progress: Callable[[int, int], None] | None = None,
-    job_execution_id: str | None = None,
-) -> list[dict[str, Any]]:
-    """Write records to a Labric table, splitting across multiple requests of rows_per_batch rows when set."""
-    return _write(
-        client,
-        data,
-        rows_per_batch,
-        on_progress,
-        job_execution_id,
-        target_type="table",
-        target_name=target_name,
-        mode=mode,
-        params_to_match_for_update=params_to_match_for_update,
-        defaults=defaults,
-        batch_insert_ok=batch_insert_ok,
-        collect_output=collect_output,
-    )
+    def write_core_table(
+        self,
+        target_name: str,
+        data: list[dict[str, Any]],
+        params_to_match_for_update: list[str] | None = None,
+        mode: str = "create-or-update",
+        defaults: dict[str, str] | None = None,
+        collect_output: bool = True,
+        rows_per_batch: int | None = None,
+        on_progress: Callable[[int, int], None] | None = None,
+        job_execution_id: str | None = None,
+    ) -> list[dict[str, Any]]:
+        """Write records to a core table, splitting across multiple requests of rows_per_batch rows when set."""
+        return _write(
+            self,
+            data,
+            rows_per_batch,
+            on_progress,
+            job_execution_id,
+            target_type="core-table",
+            target_name=target_name,
+            mode=mode,
+            params_to_match_for_update=params_to_match_for_update,
+            defaults=defaults,
+            collect_output=collect_output,
+        )
+
+    def write_labric_table(
+        self,
+        target_name: str,
+        data: list[dict[str, Any]],
+        params_to_match_for_update: list[str] | None = None,
+        mode: str = "create-or-update",
+        defaults: dict[str, str] | None = None,
+        batch_insert_ok: bool = False,
+        collect_output: bool = True,
+        rows_per_batch: int | None = None,
+        on_progress: Callable[[int, int], None] | None = None,
+        job_execution_id: str | None = None,
+    ) -> list[dict[str, Any]]:
+        """Write records to a Labric table, splitting across multiple requests of rows_per_batch rows when set."""
+        return _write(
+            self,
+            data,
+            rows_per_batch,
+            on_progress,
+            job_execution_id,
+            target_type="table",
+            target_name=target_name,
+            mode=mode,
+            params_to_match_for_update=params_to_match_for_update,
+            defaults=defaults,
+            batch_insert_ok=batch_insert_ok,
+            collect_output=collect_output,
+        )
 
 
 def _write(

@@ -3,9 +3,14 @@
   "generatorName": "fernapi/fern-python-sdk",
   "generatorVersion": "5.15.2",
   "generatorConfig": {
-    "client_class_name": "Labric"
+    "client": {
+      "class_name": "BaseLabric",
+      "filename": "base_client.py",
+      "exported_class_name": "Labric",
+      "exported_filename": "client.py"
+    }
   },
-  "originGitCommit": "7add4498ce815777cdfe0aa4f95537eef52f165a",
+  "originGitCommit": "ffb71a4fd08c0e4de6b8efb90e35f83ca9c3ed25",
   "originGitCommitIsDirty": false,
   "invokedBy": "ci",
   "ciProvider": "github"
