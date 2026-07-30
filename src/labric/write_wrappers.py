@@ -28,6 +28,8 @@ Pass collect_output=False unless you need the written rows back -- otherwise eve
 row is echoed back by the API and accumulated in memory.
 """
 
+from __future__ import annotations
+
 import json
 import os
 from typing import Any, Callable
