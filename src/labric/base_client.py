@@ -12,6 +12,7 @@ from .core.logging import LogConfig, Logger
 from .environment import LabricEnvironment
 
 if typing.TYPE_CHECKING:
+    from .agent.client import AgentClient, AsyncAgentClient
     from .tools.client import AsyncToolsClient, ToolsClient
 
 
@@ -103,7 +104,16 @@ class BaseLabric:
             max_stream_reconnection_attempts=max_stream_reconnection_attempts,
             logging=logging,
         )
+        self._agent: typing.Optional[AgentClient] = None
         self._tools: typing.Optional[ToolsClient] = None
+
+    @property
+    def agent(self):
+        if self._agent is None:
+            from .agent.client import AgentClient  # noqa: E402
+
+            self._agent = AgentClient(client_wrapper=self._client_wrapper)
+        return self._agent
 
     @property
     def tools(self):
@@ -223,7 +233,16 @@ class AsyncBaseLabric:
             max_stream_reconnection_attempts=max_stream_reconnection_attempts,
             logging=logging,
         )
+        self._agent: typing.Optional[AsyncAgentClient] = None
         self._tools: typing.Optional[AsyncToolsClient] = None
+
+    @property
+    def agent(self):
+        if self._agent is None:
+            from .agent.client import AsyncAgentClient  # noqa: E402
+
+            self._agent = AsyncAgentClient(client_wrapper=self._client_wrapper)
+        return self._agent
 
     @property
     def tools(self):

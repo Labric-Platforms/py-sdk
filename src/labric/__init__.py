@@ -7,6 +7,11 @@ from importlib import import_module
 
 if typing.TYPE_CHECKING:
     from .types import (
+        AgentRunEvent,
+        AgentRunRequest,
+        AgentRunResponse,
+        AgentRunUsage,
+        AgentToolCall,
         BatchWriteOptions,
         BatchWriteOptionsMode,
         BatchWriteResponse,
@@ -35,12 +40,17 @@ if typing.TYPE_CHECKING:
         UnauthorizedError,
         UnprocessableEntityError,
     )
-    from . import tools
+    from . import agent, tools
     from ._default_clients import DefaultAioHttpClient, DefaultAsyncHttpxClient
     from .client import AsyncLabric, Labric
     from .environment import LabricEnvironment
     from .tools import LabricReadSchemaMode, LabricReadSchemaTargetType, LabricWriteSchemaTargetType
 _dynamic_imports: typing.Dict[str, str] = {
+    "AgentRunEvent": ".types",
+    "AgentRunRequest": ".types",
+    "AgentRunResponse": ".types",
+    "AgentRunUsage": ".types",
+    "AgentToolCall": ".types",
     "AsyncLabric": ".client",
     "BadGatewayError": ".errors",
     "BadRequestError": ".errors",
@@ -74,6 +84,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "UnprocessableEntityError": ".errors",
     "ValidationErrorSchema": ".types",
     "WritePlan": ".types",
+    "agent": ".agent",
     "tools": ".tools",
 }
 
@@ -100,6 +111,11 @@ def __dir__():
 
 
 __all__ = [
+    "AgentRunEvent",
+    "AgentRunRequest",
+    "AgentRunResponse",
+    "AgentRunUsage",
+    "AgentToolCall",
     "AsyncLabric",
     "BadGatewayError",
     "BadRequestError",
@@ -133,5 +149,6 @@ __all__ = [
     "UnprocessableEntityError",
     "ValidationErrorSchema",
     "WritePlan",
+    "agent",
     "tools",
 ]

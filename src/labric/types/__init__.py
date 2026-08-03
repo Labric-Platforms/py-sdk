@@ -6,6 +6,11 @@ import typing
 from importlib import import_module
 
 if typing.TYPE_CHECKING:
+    from .agent_run_event import AgentRunEvent
+    from .agent_run_request import AgentRunRequest
+    from .agent_run_response import AgentRunResponse
+    from .agent_run_usage import AgentRunUsage
+    from .agent_tool_call import AgentToolCall
     from .batch_write_options import BatchWriteOptions
     from .batch_write_options_mode import BatchWriteOptionsMode
     from .batch_write_response import BatchWriteResponse
@@ -24,6 +29,11 @@ if typing.TYPE_CHECKING:
     from .validation_error_schema import ValidationErrorSchema
     from .write_plan import WritePlan
 _dynamic_imports: typing.Dict[str, str] = {
+    "AgentRunEvent": ".agent_run_event",
+    "AgentRunRequest": ".agent_run_request",
+    "AgentRunResponse": ".agent_run_response",
+    "AgentRunUsage": ".agent_run_usage",
+    "AgentToolCall": ".agent_tool_call",
     "BatchWriteOptions": ".batch_write_options",
     "BatchWriteOptionsMode": ".batch_write_options_mode",
     "BatchWriteResponse": ".batch_write_response",
@@ -66,6 +76,11 @@ def __dir__():
 
 
 __all__ = [
+    "AgentRunEvent",
+    "AgentRunRequest",
+    "AgentRunResponse",
+    "AgentRunUsage",
+    "AgentToolCall",
     "BatchWriteOptions",
     "BatchWriteOptionsMode",
     "BatchWriteResponse",
