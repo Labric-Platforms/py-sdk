@@ -37,6 +37,7 @@ if typing.TYPE_CHECKING:
         InternalServerError,
         NotFoundError,
         ServiceUnavailableError,
+        TooManyRequestsError,
         UnauthorizedError,
         UnprocessableEntityError,
     )
@@ -77,6 +78,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "ServiceUnavailableError": ".errors",
     "TableSchemaInfoSchema": ".types",
     "TableSummary": ".types",
+    "TooManyRequestsError": ".errors",
     "ToolsFileContentSchema": ".types",
     "ToolsFileInfoSchema": ".types",
     "ToolsMlModelSchema": ".types",
@@ -142,6 +144,7 @@ __all__ = [
     "ServiceUnavailableError",
     "TableSchemaInfoSchema",
     "TableSummary",
+    "TooManyRequestsError",
     "ToolsFileContentSchema",
     "ToolsFileInfoSchema",
     "ToolsMlModelSchema",
