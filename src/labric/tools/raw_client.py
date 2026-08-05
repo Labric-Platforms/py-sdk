@@ -499,25 +499,21 @@ class RawToolsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     def upload_file(
-        self,
-        *,
-        file: core.File,
-        job_execution_id: typing.Optional[str] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
+        self, *, file: core.File, job_execution_id: str, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[LabricUploadFileSchema]:
         """
         Upload a job artifact file.
 
         Intended for use by jobs running in sandboxes. Accepts a multipart/form-data
-        file upload, stores it in GCS, and returns the created file record. When a
-        job_execution_id is provided, records provenance linking the file to that execution.
+        file upload, stores it in GCS, records provenance linking the file to the
+        job execution, and returns the created file record.
 
         Parameters
         ----------
         file : core.File
             See core.File for more documentation
 
-        job_execution_id : typing.Optional[str]
+        job_execution_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1956,25 +1952,21 @@ class AsyncRawToolsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     async def upload_file(
-        self,
-        *,
-        file: core.File,
-        job_execution_id: typing.Optional[str] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
+        self, *, file: core.File, job_execution_id: str, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[LabricUploadFileSchema]:
         """
         Upload a job artifact file.
 
         Intended for use by jobs running in sandboxes. Accepts a multipart/form-data
-        file upload, stores it in GCS, and returns the created file record. When a
-        job_execution_id is provided, records provenance linking the file to that execution.
+        file upload, stores it in GCS, records provenance linking the file to the
+        job execution, and returns the created file record.
 
         Parameters
         ----------
         file : core.File
             See core.File for more documentation
 
-        job_execution_id : typing.Optional[str]
+        job_execution_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.

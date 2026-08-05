@@ -526,8 +526,8 @@ client.tools.execute_sql(
 Upload a job artifact file.
 
 Intended for use by jobs running in sandboxes. Accepts a multipart/form-data
-file upload, stores it in GCS, and returns the created file record. When a
-job_execution_id is provided, records provenance linking the file to that execution.
+file upload, stores it in GCS, records provenance linking the file to the
+job execution, and returns the created file record.
 </dd>
 </dl>
 </dd>
@@ -552,6 +552,7 @@ client = Labric(
 
 client.tools.upload_file(
     file="example_file",
+    job_execution_id="job_execution_id",
 )
 
 ```
@@ -576,7 +577,7 @@ client.tools.upload_file(
 <dl>
 <dd>
 
-**job_execution_id:** `typing.Optional[str]` 
+**job_execution_id:** `str` 
     
 </dd>
 </dl>

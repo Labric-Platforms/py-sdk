@@ -241,25 +241,21 @@ class ToolsClient:
         return _response.data
 
     def upload_file(
-        self,
-        *,
-        file: core.File,
-        job_execution_id: typing.Optional[str] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
+        self, *, file: core.File, job_execution_id: str, request_options: typing.Optional[RequestOptions] = None
     ) -> LabricUploadFileSchema:
         """
         Upload a job artifact file.
 
         Intended for use by jobs running in sandboxes. Accepts a multipart/form-data
-        file upload, stores it in GCS, and returns the created file record. When a
-        job_execution_id is provided, records provenance linking the file to that execution.
+        file upload, stores it in GCS, records provenance linking the file to the
+        job execution, and returns the created file record.
 
         Parameters
         ----------
         file : core.File
             See core.File for more documentation
 
-        job_execution_id : typing.Optional[str]
+        job_execution_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -276,7 +272,9 @@ class ToolsClient:
         client = Labric(
             api_key="YOUR_API_KEY",
         )
-        client.tools.upload_file()
+        client.tools.upload_file(
+            job_execution_id="job_execution_id",
+        )
         """
         _response = self._raw_client.upload_file(
             file=file, job_execution_id=job_execution_id, request_options=request_options
@@ -821,25 +819,21 @@ class AsyncToolsClient:
         return _response.data
 
     async def upload_file(
-        self,
-        *,
-        file: core.File,
-        job_execution_id: typing.Optional[str] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
+        self, *, file: core.File, job_execution_id: str, request_options: typing.Optional[RequestOptions] = None
     ) -> LabricUploadFileSchema:
         """
         Upload a job artifact file.
 
         Intended for use by jobs running in sandboxes. Accepts a multipart/form-data
-        file upload, stores it in GCS, and returns the created file record. When a
-        job_execution_id is provided, records provenance linking the file to that execution.
+        file upload, stores it in GCS, records provenance linking the file to the
+        job execution, and returns the created file record.
 
         Parameters
         ----------
         file : core.File
             See core.File for more documentation
 
-        job_execution_id : typing.Optional[str]
+        job_execution_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -861,7 +855,9 @@ class AsyncToolsClient:
 
 
         async def main() -> None:
-            await client.tools.upload_file()
+            await client.tools.upload_file(
+                job_execution_id="job_execution_id",
+            )
 
 
         asyncio.run(main())
