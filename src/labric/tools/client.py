@@ -11,14 +11,17 @@ from ..types.labric_upload_file_schema import LabricUploadFileSchema
 from ..types.predict_response_schema import PredictResponseSchema
 from ..types.query_result import QueryResult
 from ..types.revert_result_schema import RevertResultSchema
+from ..types.start_job_execution_schema import StartJobExecutionSchema
 from ..types.table_schema_info_schema import TableSchemaInfoSchema
 from ..types.tools_file_content_schema import ToolsFileContentSchema
 from ..types.tools_file_info_schema import ToolsFileInfoSchema
+from ..types.tools_job_execution_schema import ToolsJobExecutionSchema
 from ..types.tools_ml_model_schema import ToolsMlModelSchema
 from .raw_client import AsyncRawToolsClient, RawToolsClient
 from .types.labric_read_schema_mode import LabricReadSchemaMode
 from .types.labric_read_schema_target_type import LabricReadSchemaTargetType
 from .types.labric_write_schema_target_type import LabricWriteSchemaTargetType
+from .types.update_job_execution_status_schema_status import UpdateJobExecutionStatusSchemaStatus
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -404,6 +407,97 @@ class ToolsClient:
         )
         """
         _response = self._raw_client.get_file_content(file_id, request_options=request_options)
+        return _response.data
+
+    def start_job_execution(
+        self,
+        *,
+        request: typing.Optional[StartJobExecutionSchema] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ToolsJobExecutionSchema:
+        """
+        Open a job execution for a script running outside the platform.
+
+        Returns a job_execution_id to pass to the write and upload-file tools, so
+        everything a single script run produces is attributed to one execution and
+        can be inspected or reverted as a unit. Run under an existing job by passing
+        its job_id, or pass a job_name to run under a job of that name, creating it
+        if it does not exist; with neither, the execution lands under a default
+        off-platform job. The execution is marked running immediately; close it with
+        the update-status tool when the script finishes.
+
+        Parameters
+        ----------
+        request : typing.Optional[StartJobExecutionSchema]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ToolsJobExecutionSchema
+            OK
+
+        Examples
+        --------
+        from labric import Labric, StartJobExecutionSchema
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.tools.start_job_execution(
+            request=StartJobExecutionSchema(),
+        )
+        """
+        _response = self._raw_client.start_job_execution(request=request, request_options=request_options)
+        return _response.data
+
+    def update_job_execution_status(
+        self,
+        execution_id: str,
+        *,
+        status: UpdateJobExecutionStatusSchemaStatus,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ToolsJobExecutionSchema:
+        """
+        Close a job execution as completed or failed.
+
+        Use this when an off-platform script finishes, so the platform stops
+        reporting the run as in progress. Either status is final: re-sending the
+        status the execution already has is a no-op, but changing it afterwards is
+        rejected. Only executions opened by the start tool are accepted — every
+        other execution's status is recorded by the platform itself.
+
+        Parameters
+        ----------
+        execution_id : str
+
+        status : UpdateJobExecutionStatusSchemaStatus
+            How the run ended. Either status is final: the execution cannot change status afterwards.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ToolsJobExecutionSchema
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.tools.update_job_execution_status(
+            execution_id="execution_id",
+            status="completed",
+        )
+        """
+        _response = self._raw_client.update_job_execution_status(
+            execution_id, status=status, request_options=request_options
+        )
         return _response.data
 
     def revert_job_execution(
@@ -1014,6 +1108,113 @@ class AsyncToolsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.get_file_content(file_id, request_options=request_options)
+        return _response.data
+
+    async def start_job_execution(
+        self,
+        *,
+        request: typing.Optional[StartJobExecutionSchema] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ToolsJobExecutionSchema:
+        """
+        Open a job execution for a script running outside the platform.
+
+        Returns a job_execution_id to pass to the write and upload-file tools, so
+        everything a single script run produces is attributed to one execution and
+        can be inspected or reverted as a unit. Run under an existing job by passing
+        its job_id, or pass a job_name to run under a job of that name, creating it
+        if it does not exist; with neither, the execution lands under a default
+        off-platform job. The execution is marked running immediately; close it with
+        the update-status tool when the script finishes.
+
+        Parameters
+        ----------
+        request : typing.Optional[StartJobExecutionSchema]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ToolsJobExecutionSchema
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric, StartJobExecutionSchema
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.tools.start_job_execution(
+                request=StartJobExecutionSchema(),
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.start_job_execution(request=request, request_options=request_options)
+        return _response.data
+
+    async def update_job_execution_status(
+        self,
+        execution_id: str,
+        *,
+        status: UpdateJobExecutionStatusSchemaStatus,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ToolsJobExecutionSchema:
+        """
+        Close a job execution as completed or failed.
+
+        Use this when an off-platform script finishes, so the platform stops
+        reporting the run as in progress. Either status is final: re-sending the
+        status the execution already has is a no-op, but changing it afterwards is
+        rejected. Only executions opened by the start tool are accepted — every
+        other execution's status is recorded by the platform itself.
+
+        Parameters
+        ----------
+        execution_id : str
+
+        status : UpdateJobExecutionStatusSchemaStatus
+            How the run ended. Either status is final: the execution cannot change status afterwards.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ToolsJobExecutionSchema
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.tools.update_job_execution_status(
+                execution_id="execution_id",
+                status="completed",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.update_job_execution_status(
+            execution_id, status=status, request_options=request_options
+        )
         return _response.data
 
     async def revert_job_execution(

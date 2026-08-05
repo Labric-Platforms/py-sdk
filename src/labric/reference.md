@@ -845,6 +845,175 @@ client.tools.get_file_content(
 </dl>
 </details>
 
+<details><summary><code>client.tools.<a href="src/labric/tools/client.py">start_job_execution</a>(...) -> ToolsJobExecutionSchema</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Open a job execution for a script running outside the platform.
+
+Returns a job_execution_id to pass to the write and upload-file tools, so
+everything a single script run produces is attributed to one execution and
+can be inspected or reverted as a unit. Run under an existing job by passing
+its job_id, or pass a job_name to run under a job of that name, creating it
+if it does not exist; with neither, the execution lands under a default
+off-platform job. The execution is marked running immediately; close it with
+the update-status tool when the script finishes.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric, StartJobExecutionSchema
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.tools.start_job_execution(
+    request=StartJobExecutionSchema(),
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `typing.Optional[StartJobExecutionSchema]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.tools.<a href="src/labric/tools/client.py">update_job_execution_status</a>(...) -> ToolsJobExecutionSchema</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Close a job execution as completed or failed.
+
+Use this when an off-platform script finishes, so the platform stops
+reporting the run as in progress. Either status is final: re-sending the
+status the execution already has is a no-op, but changing it afterwards is
+rejected. Only executions opened by the start tool are accepted — every
+other execution's status is recorded by the platform itself.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.tools.update_job_execution_status(
+    execution_id="execution_id",
+    status="completed",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**execution_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**status:** `UpdateJobExecutionStatusSchemaStatus` — How the run ended. Either status is final: the execution cannot change status afterwards.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.tools.<a href="src/labric/tools/client.py">revert_job_execution</a>(...) -> RevertResultSchema</code></summary>
 <dl>
 <dd>

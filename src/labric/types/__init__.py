@@ -21,10 +21,12 @@ if typing.TYPE_CHECKING:
     from .predicted_annotation_schema import PredictedAnnotationSchema
     from .query_result import QueryResult
     from .revert_result_schema import RevertResultSchema
+    from .start_job_execution_schema import StartJobExecutionSchema
     from .table_schema_info_schema import TableSchemaInfoSchema
     from .table_summary import TableSummary
     from .tools_file_content_schema import ToolsFileContentSchema
     from .tools_file_info_schema import ToolsFileInfoSchema
+    from .tools_job_execution_schema import ToolsJobExecutionSchema
     from .tools_ml_model_schema import ToolsMlModelSchema
     from .validation_error_schema import ValidationErrorSchema
     from .write_plan import WritePlan
@@ -44,10 +46,12 @@ _dynamic_imports: typing.Dict[str, str] = {
     "PredictedAnnotationSchema": ".predicted_annotation_schema",
     "QueryResult": ".query_result",
     "RevertResultSchema": ".revert_result_schema",
+    "StartJobExecutionSchema": ".start_job_execution_schema",
     "TableSchemaInfoSchema": ".table_schema_info_schema",
     "TableSummary": ".table_summary",
     "ToolsFileContentSchema": ".tools_file_content_schema",
     "ToolsFileInfoSchema": ".tools_file_info_schema",
+    "ToolsJobExecutionSchema": ".tools_job_execution_schema",
     "ToolsMlModelSchema": ".tools_ml_model_schema",
     "ValidationErrorSchema": ".validation_error_schema",
     "WritePlan": ".write_plan",
@@ -91,10 +95,12 @@ __all__ = [
     "PredictedAnnotationSchema",
     "QueryResult",
     "RevertResultSchema",
+    "StartJobExecutionSchema",
     "TableSchemaInfoSchema",
     "TableSummary",
     "ToolsFileContentSchema",
     "ToolsFileInfoSchema",
+    "ToolsJobExecutionSchema",
     "ToolsMlModelSchema",
     "ValidationErrorSchema",
     "WritePlan",
