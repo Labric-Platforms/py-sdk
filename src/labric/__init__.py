@@ -35,6 +35,7 @@ if typing.TYPE_CHECKING:
     from .errors import (
         BadGatewayError,
         BadRequestError,
+        ConflictError,
         ForbiddenError,
         InternalServerError,
         NotFoundError,
@@ -66,6 +67,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "BatchWriteOptionsMode": ".types",
     "BatchWriteResponse": ".types",
     "ColumnInfoSchema": ".types",
+    "ConflictError": ".errors",
     "DefaultAioHttpClient": "._default_clients",
     "DefaultAsyncHttpxClient": "._default_clients",
     "ErrorSchema": ".types",
@@ -135,6 +137,7 @@ __all__ = [
     "BatchWriteOptionsMode",
     "BatchWriteResponse",
     "ColumnInfoSchema",
+    "ConflictError",
     "DefaultAioHttpClient",
     "DefaultAsyncHttpxClient",
     "ErrorSchema",

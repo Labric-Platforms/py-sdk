@@ -14,6 +14,7 @@ from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
 from ..errors.bad_gateway_error import BadGatewayError
 from ..errors.bad_request_error import BadRequestError
+from ..errors.conflict_error import ConflictError
 from ..errors.forbidden_error import ForbiddenError
 from ..errors.internal_server_error import InternalServerError
 from ..errors.not_found_error import NotFoundError
@@ -502,21 +503,32 @@ class RawToolsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     def upload_file(
-        self, *, file: core.File, job_execution_id: str, request_options: typing.Optional[RequestOptions] = None
+        self,
+        *,
+        file: core.File,
+        job_execution_id: typing.Optional[str] = OMIT,
+        instrument_id: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[LabricUploadFileSchema]:
         """
-        Upload a job artifact file.
+        Upload a file.
 
-        Intended for use by jobs running in sandboxes. Accepts a multipart/form-data
-        file upload, stores it in GCS, records provenance linking the file to the
-        job execution, and returns the created file record.
+        Accepts a multipart/form-data file upload, stores it in GCS, and returns the
+        created file record. At least one of job_execution_id and instrument_id is
+        required: pass a job_execution_id for an artifact of a job running in a
+        sandbox, which also records provenance linking the file to that execution,
+        and pass an instrument_id for data captured off-platform by an instrument the
+        Sync app cannot reach, which attaches the file to that instrument so
+        instrument triggers and parsers pick it up.
 
         Parameters
         ----------
         file : core.File
             See core.File for more documentation
 
-        job_execution_id : str
+        job_execution_id : typing.Optional[str]
+
+        instrument_id : typing.Optional[str]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -531,6 +543,7 @@ class RawToolsClient:
             method="POST",
             data={
                 "job_execution_id": job_execution_id,
+                "instrument_id": instrument_id,
             },
             files={
                 "file": file,
@@ -584,6 +597,17 @@ class RawToolsClient:
                 )
             if _response.status_code == 404:
                 raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 409:
+                raise ConflictError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,
@@ -2206,21 +2230,32 @@ class AsyncRawToolsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     async def upload_file(
-        self, *, file: core.File, job_execution_id: str, request_options: typing.Optional[RequestOptions] = None
+        self,
+        *,
+        file: core.File,
+        job_execution_id: typing.Optional[str] = OMIT,
+        instrument_id: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[LabricUploadFileSchema]:
         """
-        Upload a job artifact file.
+        Upload a file.
 
-        Intended for use by jobs running in sandboxes. Accepts a multipart/form-data
-        file upload, stores it in GCS, records provenance linking the file to the
-        job execution, and returns the created file record.
+        Accepts a multipart/form-data file upload, stores it in GCS, and returns the
+        created file record. At least one of job_execution_id and instrument_id is
+        required: pass a job_execution_id for an artifact of a job running in a
+        sandbox, which also records provenance linking the file to that execution,
+        and pass an instrument_id for data captured off-platform by an instrument the
+        Sync app cannot reach, which attaches the file to that instrument so
+        instrument triggers and parsers pick it up.
 
         Parameters
         ----------
         file : core.File
             See core.File for more documentation
 
-        job_execution_id : str
+        job_execution_id : typing.Optional[str]
+
+        instrument_id : typing.Optional[str]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -2235,6 +2270,7 @@ class AsyncRawToolsClient:
             method="POST",
             data={
                 "job_execution_id": job_execution_id,
+                "instrument_id": instrument_id,
             },
             files={
                 "file": file,
@@ -2288,6 +2324,17 @@ class AsyncRawToolsClient:
                 )
             if _response.status_code == 404:
                 raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 409:
+                raise ConflictError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,

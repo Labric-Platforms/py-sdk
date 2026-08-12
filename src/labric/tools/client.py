@@ -244,21 +244,32 @@ class ToolsClient:
         return _response.data
 
     def upload_file(
-        self, *, file: core.File, job_execution_id: str, request_options: typing.Optional[RequestOptions] = None
+        self,
+        *,
+        file: core.File,
+        job_execution_id: typing.Optional[str] = OMIT,
+        instrument_id: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> LabricUploadFileSchema:
         """
-        Upload a job artifact file.
+        Upload a file.
 
-        Intended for use by jobs running in sandboxes. Accepts a multipart/form-data
-        file upload, stores it in GCS, records provenance linking the file to the
-        job execution, and returns the created file record.
+        Accepts a multipart/form-data file upload, stores it in GCS, and returns the
+        created file record. At least one of job_execution_id and instrument_id is
+        required: pass a job_execution_id for an artifact of a job running in a
+        sandbox, which also records provenance linking the file to that execution,
+        and pass an instrument_id for data captured off-platform by an instrument the
+        Sync app cannot reach, which attaches the file to that instrument so
+        instrument triggers and parsers pick it up.
 
         Parameters
         ----------
         file : core.File
             See core.File for more documentation
 
-        job_execution_id : str
+        job_execution_id : typing.Optional[str]
+
+        instrument_id : typing.Optional[str]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -275,12 +286,10 @@ class ToolsClient:
         client = Labric(
             api_key="YOUR_API_KEY",
         )
-        client.tools.upload_file(
-            job_execution_id="job_execution_id",
-        )
+        client.tools.upload_file()
         """
         _response = self._raw_client.upload_file(
-            file=file, job_execution_id=job_execution_id, request_options=request_options
+            file=file, job_execution_id=job_execution_id, instrument_id=instrument_id, request_options=request_options
         )
         return _response.data
 
@@ -913,21 +922,32 @@ class AsyncToolsClient:
         return _response.data
 
     async def upload_file(
-        self, *, file: core.File, job_execution_id: str, request_options: typing.Optional[RequestOptions] = None
+        self,
+        *,
+        file: core.File,
+        job_execution_id: typing.Optional[str] = OMIT,
+        instrument_id: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> LabricUploadFileSchema:
         """
-        Upload a job artifact file.
+        Upload a file.
 
-        Intended for use by jobs running in sandboxes. Accepts a multipart/form-data
-        file upload, stores it in GCS, records provenance linking the file to the
-        job execution, and returns the created file record.
+        Accepts a multipart/form-data file upload, stores it in GCS, and returns the
+        created file record. At least one of job_execution_id and instrument_id is
+        required: pass a job_execution_id for an artifact of a job running in a
+        sandbox, which also records provenance linking the file to that execution,
+        and pass an instrument_id for data captured off-platform by an instrument the
+        Sync app cannot reach, which attaches the file to that instrument so
+        instrument triggers and parsers pick it up.
 
         Parameters
         ----------
         file : core.File
             See core.File for more documentation
 
-        job_execution_id : str
+        job_execution_id : typing.Optional[str]
+
+        instrument_id : typing.Optional[str]
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -949,15 +969,13 @@ class AsyncToolsClient:
 
 
         async def main() -> None:
-            await client.tools.upload_file(
-                job_execution_id="job_execution_id",
-            )
+            await client.tools.upload_file()
 
 
         asyncio.run(main())
         """
         _response = await self._raw_client.upload_file(
-            file=file, job_execution_id=job_execution_id, request_options=request_options
+            file=file, job_execution_id=job_execution_id, instrument_id=instrument_id, request_options=request_options
         )
         return _response.data
 

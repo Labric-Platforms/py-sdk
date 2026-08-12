@@ -523,11 +523,15 @@ client.tools.execute_sql(
 <dl>
 <dd>
 
-Upload a job artifact file.
+Upload a file.
 
-Intended for use by jobs running in sandboxes. Accepts a multipart/form-data
-file upload, stores it in GCS, records provenance linking the file to the
-job execution, and returns the created file record.
+Accepts a multipart/form-data file upload, stores it in GCS, and returns the
+created file record. At least one of job_execution_id and instrument_id is
+required: pass a job_execution_id for an artifact of a job running in a
+sandbox, which also records provenance linking the file to that execution,
+and pass an instrument_id for data captured off-platform by an instrument the
+Sync app cannot reach, which attaches the file to that instrument so
+instrument triggers and parsers pick it up.
 </dd>
 </dl>
 </dd>
@@ -552,7 +556,6 @@ client = Labric(
 
 client.tools.upload_file(
     file="example_file",
-    job_execution_id="job_execution_id",
 )
 
 ```
@@ -577,7 +580,15 @@ client.tools.upload_file(
 <dl>
 <dd>
 
-**job_execution_id:** `str` 
+**job_execution_id:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**instrument_id:** `typing.Optional[str]` 
     
 </dd>
 </dl>
