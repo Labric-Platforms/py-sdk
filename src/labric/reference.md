@@ -1103,6 +1103,99 @@ client.tools.revert_job_execution(
 </dl>
 </details>
 
+<details><summary><code>client.tools.<a href="src/labric/tools/client.py">autorotate_image</a>(...) -> AutorotateResultSchema</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Align an image's display orientation with a reference image.
+
+Estimates how far this image is rotated relative to the reference image
+(both identified by file id) and, when the estimate is confident, stores
+it as the image's display rotation. The rotation is display-only: viewers
+rotate the viewport while pixels, annotation masks, and training data
+stay in the original frame. Estimates within 2 degrees of a right angle
+snap to it. A low-confidence estimate -- images that don't show the same
+object, or lack the texture to register -- is returned but not stored
+(`applied` false). Images that already have annotations are rejected:
+autorotate is a pre-labeling step, and silently reorienting a view that
+masks were drawn against would mislead reviewers.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.tools.autorotate_image(
+    file_id="file_id",
+    reference_file_id="reference_file_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**file_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**reference_file_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.tools.<a href="src/labric/tools/client.py">batch_write</a>(...) -> BatchWriteResponse</code></summary>
 <dl>
 <dd>

@@ -11,6 +11,7 @@ if typing.TYPE_CHECKING:
     from .agent_run_response import AgentRunResponse
     from .agent_run_usage import AgentRunUsage
     from .agent_tool_call import AgentToolCall
+    from .autorotate_result_schema import AutorotateResultSchema
     from .batch_write_options import BatchWriteOptions
     from .batch_write_options_mode import BatchWriteOptionsMode
     from .batch_write_response import BatchWriteResponse
@@ -36,6 +37,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "AgentRunResponse": ".agent_run_response",
     "AgentRunUsage": ".agent_run_usage",
     "AgentToolCall": ".agent_tool_call",
+    "AutorotateResultSchema": ".autorotate_result_schema",
     "BatchWriteOptions": ".batch_write_options",
     "BatchWriteOptionsMode": ".batch_write_options_mode",
     "BatchWriteResponse": ".batch_write_response",
@@ -85,6 +87,7 @@ __all__ = [
     "AgentRunResponse",
     "AgentRunUsage",
     "AgentToolCall",
+    "AutorotateResultSchema",
     "BatchWriteOptions",
     "BatchWriteOptionsMode",
     "BatchWriteResponse",
