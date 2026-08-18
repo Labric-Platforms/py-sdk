@@ -5,7 +5,6 @@ import typing
 from .. import core
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
-from ..types.autorotate_result_schema import AutorotateResultSchema
 from ..types.batch_write_options import BatchWriteOptions
 from ..types.batch_write_response import BatchWriteResponse
 from ..types.labric_upload_file_schema import LabricUploadFileSchema
@@ -545,54 +544,6 @@ class ToolsClient:
         )
         """
         _response = self._raw_client.revert_job_execution(execution_id, request_options=request_options)
-        return _response.data
-
-    def autorotate_image(
-        self, file_id: str, *, reference_file_id: str, request_options: typing.Optional[RequestOptions] = None
-    ) -> AutorotateResultSchema:
-        """
-        Align an image's display orientation with a reference image.
-
-        Estimates how far this image is rotated relative to the reference image
-        (both identified by file id) and, when the estimate is confident, stores
-        it as the image's display rotation. The rotation is display-only: viewers
-        rotate the viewport while pixels, annotation masks, and training data
-        stay in the original frame. Estimates within 2 degrees of a right angle
-        snap to it. A low-confidence estimate -- images that don't show the same
-        object, or lack the texture to register -- is returned but not stored
-        (`applied` false). Images that already have annotations are rejected:
-        autorotate is a pre-labeling step, and silently reorienting a view that
-        masks were drawn against would mislead reviewers.
-
-        Parameters
-        ----------
-        file_id : str
-
-        reference_file_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        AutorotateResultSchema
-            OK
-
-        Examples
-        --------
-        from labric import Labric
-
-        client = Labric(
-            api_key="YOUR_API_KEY",
-        )
-        client.tools.autorotate_image(
-            file_id="file_id",
-            reference_file_id="reference_file_id",
-        )
-        """
-        _response = self._raw_client.autorotate_image(
-            file_id, reference_file_id=reference_file_id, request_options=request_options
-        )
         return _response.data
 
     def batch_write(
@@ -1327,62 +1278,6 @@ class AsyncToolsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.revert_job_execution(execution_id, request_options=request_options)
-        return _response.data
-
-    async def autorotate_image(
-        self, file_id: str, *, reference_file_id: str, request_options: typing.Optional[RequestOptions] = None
-    ) -> AutorotateResultSchema:
-        """
-        Align an image's display orientation with a reference image.
-
-        Estimates how far this image is rotated relative to the reference image
-        (both identified by file id) and, when the estimate is confident, stores
-        it as the image's display rotation. The rotation is display-only: viewers
-        rotate the viewport while pixels, annotation masks, and training data
-        stay in the original frame. Estimates within 2 degrees of a right angle
-        snap to it. A low-confidence estimate -- images that don't show the same
-        object, or lack the texture to register -- is returned but not stored
-        (`applied` false). Images that already have annotations are rejected:
-        autorotate is a pre-labeling step, and silently reorienting a view that
-        masks were drawn against would mislead reviewers.
-
-        Parameters
-        ----------
-        file_id : str
-
-        reference_file_id : str
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        AutorotateResultSchema
-            OK
-
-        Examples
-        --------
-        import asyncio
-
-        from labric import AsyncLabric
-
-        client = AsyncLabric(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.tools.autorotate_image(
-                file_id="file_id",
-                reference_file_id="reference_file_id",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._raw_client.autorotate_image(
-            file_id, reference_file_id=reference_file_id, request_options=request_options
-        )
         return _response.data
 
     async def batch_write(
