@@ -433,7 +433,10 @@ class ToolsClient:
         its job_id, or pass a job_name to run under a job of that name, creating it
         if it does not exist; with neither, the execution lands under a default
         off-platform job. The execution is marked running immediately; close it with
-        the update-status tool when the script finishes.
+        the update-status tool when the script finishes. Pass timeout_minutes to
+        have the platform fail the execution after that duration elapses, if the
+        script has not closed it in time. This prevents crashed scripts from
+        leaving jobs marked as running forever on the platform.
 
         Parameters
         ----------
@@ -1143,7 +1146,10 @@ class AsyncToolsClient:
         its job_id, or pass a job_name to run under a job of that name, creating it
         if it does not exist; with neither, the execution lands under a default
         off-platform job. The execution is marked running immediately; close it with
-        the update-status tool when the script finishes.
+        the update-status tool when the script finishes. Pass timeout_minutes to
+        have the platform fail the execution after that duration elapses, if the
+        script has not closed it in time. This prevents crashed scripts from
+        leaving jobs marked as running forever on the platform.
 
         Parameters
         ----------

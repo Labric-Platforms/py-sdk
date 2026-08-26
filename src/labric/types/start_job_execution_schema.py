@@ -21,6 +21,11 @@ class StartJobExecutionSchema(UniversalBaseModel):
     Name of the job to run under, created if it does not exist yet. Ignored when job_id is given. Defaults to 'Off-Platform Manual Job'.
     """
 
+    timeout_minutes: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Fail the execution if the script has not closed it within this many minutes (at most 43200, i.e. 30 days), so a crashed script does not leave it running forever. Omit to let it run until closed.
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:
