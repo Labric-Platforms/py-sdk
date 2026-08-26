@@ -20,6 +20,7 @@ class PredictedAnnotationSchema(UniversalBaseModel):
     mask: str
     width: int
     height: int
+    foreground_fraction: float
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
