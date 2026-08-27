@@ -7,8 +7,12 @@ from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from ..types.batch_write_options import BatchWriteOptions
 from ..types.batch_write_response import BatchWriteResponse
+from ..types.dataset_schema import DatasetSchema
 from ..types.labric_upload_file_schema import LabricUploadFileSchema
+from ..types.ml_model_task_type import MlModelTaskType
+from ..types.ml_problem_type import MlProblemType
 from ..types.predict_response_schema import PredictResponseSchema
+from ..types.quality_preset import QualityPreset
 from ..types.query_result import QueryResult
 from ..types.revert_result_schema import RevertResultSchema
 from ..types.start_job_execution_schema import StartJobExecutionSchema
@@ -16,6 +20,7 @@ from ..types.table_schema_info_schema import TableSchemaInfoSchema
 from ..types.tools_file_content_schema import ToolsFileContentSchema
 from ..types.tools_file_info_schema import ToolsFileInfoSchema
 from ..types.tools_job_execution_schema import ToolsJobExecutionSchema
+from ..types.tools_ml_model_detail_schema import ToolsMlModelDetailSchema
 from ..types.tools_ml_model_schema import ToolsMlModelSchema
 from .raw_client import AsyncRawToolsClient, RawToolsClient
 from .types.labric_read_schema_mode import LabricReadSchemaMode
@@ -41,6 +46,57 @@ class ToolsClient:
         RawToolsClient
         """
         return self._raw_client
+
+    def create_segmentation_dataset(
+        self,
+        *,
+        label_id: str,
+        name: typing.Optional[str] = OMIT,
+        description: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> DatasetSchema:
+        """
+        Create an (image, mask) training dataset from an annotation label's
+        human-vetted masks.
+
+        label_id is the id of an image annotation label (the
+        core_imageannotationlabel table); the dataset contains one row per
+        human-vetted annotation with that label, with columns 'image' (the image
+        file id) and 'mask' (the mask blob path). Pass the returned dataset id to
+        the train-ml-model tool with task_type 'segmentation', target_column
+        'mask', and image_columns ['image'].
+
+        Parameters
+        ----------
+        label_id : str
+
+        name : typing.Optional[str]
+
+        description : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        DatasetSchema
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.tools.create_segmentation_dataset(
+            label_id="label_id",
+        )
+        """
+        _response = self._raw_client.create_segmentation_dataset(
+            label_id=label_id, name=name, description=description, request_options=request_options
+        )
+        return _response.data
 
     def write(
         self,
@@ -683,6 +739,208 @@ class ToolsClient:
         _response = self._raw_client.list_ml_models(request_options=request_options)
         return _response.data
 
+    def train_ml_model(
+        self,
+        *,
+        name: str,
+        target_column: str,
+        dataset_id: str,
+        description: typing.Optional[str] = OMIT,
+        task_type: typing.Optional[MlModelTaskType] = OMIT,
+        quality_preset: typing.Optional[QualityPreset] = OMIT,
+        feature_columns: typing.Optional[typing.Sequence[str]] = OMIT,
+        image_columns: typing.Optional[typing.Sequence[str]] = OMIT,
+        problem_type: typing.Optional[MlProblemType] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ToolsMlModelDetailSchema:
+        """
+        Create an ML model and start training it on a dataset.
+
+        Training is asynchronous: the response has status 'pending', and the
+        model trains in the cloud (minutes to hours, depending on data size and
+        quality_preset). Poll the get-ml-model tool until status is 'ready' or
+        'failed'. For task_type 'tabular', the model learns to predict
+        target_column from the dataset's other columns (restrict inputs with
+        feature_columns). For 'segmentation', train on a dataset from the
+        create-segmentation-dataset tool with target_column 'mask' and
+        image_columns ['image']. All referenced columns must exist in the
+        dataset.
+
+        Parameters
+        ----------
+        name : str
+
+        target_column : str
+
+        dataset_id : str
+
+        description : typing.Optional[str]
+
+        task_type : typing.Optional[MlModelTaskType]
+
+        quality_preset : typing.Optional[QualityPreset]
+
+        feature_columns : typing.Optional[typing.Sequence[str]]
+
+        image_columns : typing.Optional[typing.Sequence[str]]
+
+        problem_type : typing.Optional[MlProblemType]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ToolsMlModelDetailSchema
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.tools.train_ml_model(
+            name="name",
+            target_column="target_column",
+            dataset_id="dataset_id",
+        )
+        """
+        _response = self._raw_client.train_ml_model(
+            name=name,
+            target_column=target_column,
+            dataset_id=dataset_id,
+            description=description,
+            task_type=task_type,
+            quality_preset=quality_preset,
+            feature_columns=feature_columns,
+            image_columns=image_columns,
+            problem_type=problem_type,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def retrain_ml_model(
+        self,
+        ml_model_id: str,
+        *,
+        target_column: str,
+        dataset_id: str,
+        description: typing.Optional[str] = OMIT,
+        task_type: typing.Optional[MlModelTaskType] = OMIT,
+        quality_preset: typing.Optional[QualityPreset] = OMIT,
+        feature_columns: typing.Optional[typing.Sequence[str]] = OMIT,
+        image_columns: typing.Optional[typing.Sequence[str]] = OMIT,
+        problem_type: typing.Optional[MlProblemType] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ToolsMlModelDetailSchema:
+        """
+        Retrain an existing ML model as a new version.
+
+        Use after the training data has changed (for example, more vetted
+        annotations) or to try a different configuration. The model keeps its
+        name and identity; an omitted task_type inherits the model's existing
+        one. Training is asynchronous like train-ml-model: poll the get-ml-model
+        tool until status is 'ready' or 'failed'. While the new version trains,
+        the model cannot serve predictions.
+
+        Parameters
+        ----------
+        ml_model_id : str
+
+        target_column : str
+
+        dataset_id : str
+
+        description : typing.Optional[str]
+
+        task_type : typing.Optional[MlModelTaskType]
+
+        quality_preset : typing.Optional[QualityPreset]
+
+        feature_columns : typing.Optional[typing.Sequence[str]]
+
+        image_columns : typing.Optional[typing.Sequence[str]]
+
+        problem_type : typing.Optional[MlProblemType]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ToolsMlModelDetailSchema
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.tools.retrain_ml_model(
+            ml_model_id="ml_model_id",
+            target_column="target_column",
+            dataset_id="dataset_id",
+        )
+        """
+        _response = self._raw_client.retrain_ml_model(
+            ml_model_id,
+            target_column=target_column,
+            dataset_id=dataset_id,
+            description=description,
+            task_type=task_type,
+            quality_preset=quality_preset,
+            feature_columns=feature_columns,
+            image_columns=image_columns,
+            problem_type=problem_type,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def get_ml_model(
+        self, ml_model_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> ToolsMlModelDetailSchema:
+        """
+        Get one ML model's training status and results.
+
+        Poll this after starting a training run: status moves from 'pending'
+        through 'training' to 'ready', or to 'failed' with the reason in
+        error_message. Status always reflects the model's most recent training
+        run; after a failed retrain, the previous ready version keeps serving
+        predictions. Once ready, evaluation_metrics holds the holdout metrics
+        and the model can serve predictions via the predict tool. A cloud job
+        that died without reporting back is settled to 'failed' by a background
+        reconciler, so keep polling through an unresponsive job.
+
+        Parameters
+        ----------
+        ml_model_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ToolsMlModelDetailSchema
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.tools.get_ml_model(
+            ml_model_id="ml_model_id",
+        )
+        """
+        _response = self._raw_client.get_ml_model(ml_model_id, request_options=request_options)
+        return _response.data
+
 
 class AsyncToolsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -698,6 +956,65 @@ class AsyncToolsClient:
         AsyncRawToolsClient
         """
         return self._raw_client
+
+    async def create_segmentation_dataset(
+        self,
+        *,
+        label_id: str,
+        name: typing.Optional[str] = OMIT,
+        description: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> DatasetSchema:
+        """
+        Create an (image, mask) training dataset from an annotation label's
+        human-vetted masks.
+
+        label_id is the id of an image annotation label (the
+        core_imageannotationlabel table); the dataset contains one row per
+        human-vetted annotation with that label, with columns 'image' (the image
+        file id) and 'mask' (the mask blob path). Pass the returned dataset id to
+        the train-ml-model tool with task_type 'segmentation', target_column
+        'mask', and image_columns ['image'].
+
+        Parameters
+        ----------
+        label_id : str
+
+        name : typing.Optional[str]
+
+        description : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        DatasetSchema
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.tools.create_segmentation_dataset(
+                label_id="label_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.create_segmentation_dataset(
+            label_id=label_id, name=name, description=description, request_options=request_options
+        )
+        return _response.data
 
     async def write(
         self,
@@ -1442,4 +1759,230 @@ class AsyncToolsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.list_ml_models(request_options=request_options)
+        return _response.data
+
+    async def train_ml_model(
+        self,
+        *,
+        name: str,
+        target_column: str,
+        dataset_id: str,
+        description: typing.Optional[str] = OMIT,
+        task_type: typing.Optional[MlModelTaskType] = OMIT,
+        quality_preset: typing.Optional[QualityPreset] = OMIT,
+        feature_columns: typing.Optional[typing.Sequence[str]] = OMIT,
+        image_columns: typing.Optional[typing.Sequence[str]] = OMIT,
+        problem_type: typing.Optional[MlProblemType] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ToolsMlModelDetailSchema:
+        """
+        Create an ML model and start training it on a dataset.
+
+        Training is asynchronous: the response has status 'pending', and the
+        model trains in the cloud (minutes to hours, depending on data size and
+        quality_preset). Poll the get-ml-model tool until status is 'ready' or
+        'failed'. For task_type 'tabular', the model learns to predict
+        target_column from the dataset's other columns (restrict inputs with
+        feature_columns). For 'segmentation', train on a dataset from the
+        create-segmentation-dataset tool with target_column 'mask' and
+        image_columns ['image']. All referenced columns must exist in the
+        dataset.
+
+        Parameters
+        ----------
+        name : str
+
+        target_column : str
+
+        dataset_id : str
+
+        description : typing.Optional[str]
+
+        task_type : typing.Optional[MlModelTaskType]
+
+        quality_preset : typing.Optional[QualityPreset]
+
+        feature_columns : typing.Optional[typing.Sequence[str]]
+
+        image_columns : typing.Optional[typing.Sequence[str]]
+
+        problem_type : typing.Optional[MlProblemType]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ToolsMlModelDetailSchema
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.tools.train_ml_model(
+                name="name",
+                target_column="target_column",
+                dataset_id="dataset_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.train_ml_model(
+            name=name,
+            target_column=target_column,
+            dataset_id=dataset_id,
+            description=description,
+            task_type=task_type,
+            quality_preset=quality_preset,
+            feature_columns=feature_columns,
+            image_columns=image_columns,
+            problem_type=problem_type,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def retrain_ml_model(
+        self,
+        ml_model_id: str,
+        *,
+        target_column: str,
+        dataset_id: str,
+        description: typing.Optional[str] = OMIT,
+        task_type: typing.Optional[MlModelTaskType] = OMIT,
+        quality_preset: typing.Optional[QualityPreset] = OMIT,
+        feature_columns: typing.Optional[typing.Sequence[str]] = OMIT,
+        image_columns: typing.Optional[typing.Sequence[str]] = OMIT,
+        problem_type: typing.Optional[MlProblemType] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ToolsMlModelDetailSchema:
+        """
+        Retrain an existing ML model as a new version.
+
+        Use after the training data has changed (for example, more vetted
+        annotations) or to try a different configuration. The model keeps its
+        name and identity; an omitted task_type inherits the model's existing
+        one. Training is asynchronous like train-ml-model: poll the get-ml-model
+        tool until status is 'ready' or 'failed'. While the new version trains,
+        the model cannot serve predictions.
+
+        Parameters
+        ----------
+        ml_model_id : str
+
+        target_column : str
+
+        dataset_id : str
+
+        description : typing.Optional[str]
+
+        task_type : typing.Optional[MlModelTaskType]
+
+        quality_preset : typing.Optional[QualityPreset]
+
+        feature_columns : typing.Optional[typing.Sequence[str]]
+
+        image_columns : typing.Optional[typing.Sequence[str]]
+
+        problem_type : typing.Optional[MlProblemType]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ToolsMlModelDetailSchema
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.tools.retrain_ml_model(
+                ml_model_id="ml_model_id",
+                target_column="target_column",
+                dataset_id="dataset_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.retrain_ml_model(
+            ml_model_id,
+            target_column=target_column,
+            dataset_id=dataset_id,
+            description=description,
+            task_type=task_type,
+            quality_preset=quality_preset,
+            feature_columns=feature_columns,
+            image_columns=image_columns,
+            problem_type=problem_type,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def get_ml_model(
+        self, ml_model_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> ToolsMlModelDetailSchema:
+        """
+        Get one ML model's training status and results.
+
+        Poll this after starting a training run: status moves from 'pending'
+        through 'training' to 'ready', or to 'failed' with the reason in
+        error_message. Status always reflects the model's most recent training
+        run; after a failed retrain, the previous ready version keeps serving
+        predictions. Once ready, evaluation_metrics holds the holdout metrics
+        and the model can serve predictions via the predict tool. A cloud job
+        that died without reporting back is settled to 'failed' by a background
+        reconciler, so keep polling through an unresponsive job.
+
+        Parameters
+        ----------
+        ml_model_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ToolsMlModelDetailSchema
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.tools.get_ml_model(
+                ml_model_id="ml_model_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.get_ml_model(ml_model_id, request_options=request_options)
         return _response.data
