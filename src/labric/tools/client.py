@@ -941,6 +941,43 @@ class ToolsClient:
         _response = self._raw_client.get_ml_model(ml_model_id, request_options=request_options)
         return _response.data
 
+    def cancel_ml_model_training(
+        self, ml_model_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> ToolsMlModelDetailSchema:
+        """
+        Cancel the model's in-flight training runs.
+
+        Overlapping retrains can leave several versions pending or training at
+        once, so the cancel is model-wide: every in-flight version is marked
+        'cancelled' and its cloud training jobs are stopped. Returns 400 when
+        no training is pending or running.
+
+        Parameters
+        ----------
+        ml_model_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ToolsMlModelDetailSchema
+            OK
+
+        Examples
+        --------
+        from labric import Labric
+
+        client = Labric(
+            api_key="YOUR_API_KEY",
+        )
+        client.tools.cancel_ml_model_training(
+            ml_model_id="ml_model_id",
+        )
+        """
+        _response = self._raw_client.cancel_ml_model_training(ml_model_id, request_options=request_options)
+        return _response.data
+
 
 class AsyncToolsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -1985,4 +2022,49 @@ class AsyncToolsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.get_ml_model(ml_model_id, request_options=request_options)
+        return _response.data
+
+    async def cancel_ml_model_training(
+        self, ml_model_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> ToolsMlModelDetailSchema:
+        """
+        Cancel the model's in-flight training runs.
+
+        Overlapping retrains can leave several versions pending or training at
+        once, so the cancel is model-wide: every in-flight version is marked
+        'cancelled' and its cloud training jobs are stopped. Returns 400 when
+        no training is pending or running.
+
+        Parameters
+        ----------
+        ml_model_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ToolsMlModelDetailSchema
+            OK
+
+        Examples
+        --------
+        import asyncio
+
+        from labric import AsyncLabric
+
+        client = AsyncLabric(
+            api_key="YOUR_API_KEY",
+        )
+
+
+        async def main() -> None:
+            await client.tools.cancel_ml_model_training(
+                ml_model_id="ml_model_id",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.cancel_ml_model_training(ml_model_id, request_options=request_options)
         return _response.data

@@ -1846,3 +1846,81 @@ client.tools.get_ml_model(
 </dl>
 </details>
 
+<details><summary><code>client.tools.<a href="src/labric/tools/client.py">cancel_ml_model_training</a>(...) -> ToolsMlModelDetailSchema</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Cancel the model's in-flight training runs.
+
+Overlapping retrains can leave several versions pending or training at
+once, so the cancel is model-wide: every in-flight version is marked
+'cancelled' and its cloud training jobs are stopped. Returns 400 when
+no training is pending or running.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.tools.cancel_ml_model_training(
+    ml_model_id="ml_model_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**ml_model_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
