@@ -33,7 +33,6 @@ if typing.TYPE_CHECKING:
         ToolsFileInfoSchema,
         ToolsJobExecutionSchema,
         ToolsMlModelDetailSchema,
-        ToolsMlModelSchema,
         ValidationErrorSchema,
         WritePlan,
     )
@@ -102,7 +101,6 @@ _dynamic_imports: typing.Dict[str, str] = {
     "ToolsFileInfoSchema": ".types",
     "ToolsJobExecutionSchema": ".types",
     "ToolsMlModelDetailSchema": ".types",
-    "ToolsMlModelSchema": ".types",
     "UnauthorizedError": ".errors",
     "UnprocessableEntityError": ".errors",
     "UpdateJobExecutionStatusSchemaStatus": ".tools",
@@ -177,7 +175,6 @@ __all__ = [
     "ToolsFileInfoSchema",
     "ToolsJobExecutionSchema",
     "ToolsMlModelDetailSchema",
-    "ToolsMlModelSchema",
     "UnauthorizedError",
     "UnprocessableEntityError",
     "UpdateJobExecutionStatusSchemaStatus",

@@ -1400,7 +1400,7 @@ client.tools.predict(
 </dl>
 </details>
 
-<details><summary><code>client.tools.<a href="src/labric/tools/client.py">list_ml_models</a>() -> typing.List[ToolsMlModelSchema]</code></summary>
+<details><summary><code>client.tools.<a href="src/labric/tools/client.py">get_ml_model</a>(...) -> ToolsMlModelDetailSchema</code></summary>
 <dl>
 <dd>
 
@@ -1412,13 +1412,89 @@ client.tools.predict(
 <dl>
 <dd>
 
-List the organization's ML models and the inputs each expects.
+Get one ML model's training status and results.
+</dd>
+</dl>
+</dd>
+</dl>
 
-Returns each non-archived model with its serving status and prediction
-interface: feature_columns (plus image_columns for image models) are the
-fields each data row passed to the predict tool should contain, and
-target_column is what the model predicts. Only models with status 'ready'
-can serve predictions.
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.tools.get_ml_model(
+    ml_model_id="ml_model_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**ml_model_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.tools.<a href="src/labric/tools/client.py">list_ml_models</a>() -> typing.List[ToolsMlModelDetailSchema]</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns information about models in the organization.
+If model_id is given, return information about that model.
+If model_id is None, return a list of all models.
+
+Returns every non-archived model. To fetch one model by id, use the
+get-ml-model tool instead.
+
+
+Note that the currently active model may not be the most recently trained one.
+Also note that the status might not be perfectly up-to-date.
 </dd>
 </dl>
 </dd>
@@ -1481,17 +1557,9 @@ client.tools.list_ml_models()
 <dl>
 <dd>
 
-Create an ML model and start training it on a dataset.
-
-Training is asynchronous: the response has status 'pending', and the
-model trains in the cloud (minutes to hours, depending on data size and
-quality_preset). Poll the get-ml-model tool until status is 'ready' or
-'failed'. For task_type 'tabular', the model learns to predict
-target_column from the dataset's other columns (restrict inputs with
-feature_columns). For 'segmentation', train on a dataset from the
-create-segmentation-dataset tool with target_column 'mask' and
-image_columns ['image']. All referenced columns must exist in the
-dataset.
+API endpoint trains a ML model.
+To train a new model, the name is required and model_id should not be provided.
+To retrain an existing model, provide the model_id and do not provide the name.
 </dd>
 </dl>
 </dd>
@@ -1515,7 +1583,6 @@ client = Labric(
 )
 
 client.tools.train_ml_model(
-    name="name",
     target_column="target_column",
     dataset_id="dataset_id",
 )
@@ -1530,14 +1597,6 @@ client.tools.train_ml_model(
 
 <dl>
 <dd>
-
-<dl>
-<dd>
-
-**name:** `str` 
-    
-</dd>
-</dl>
 
 <dl>
 <dd>
@@ -1606,81 +1665,7 @@ client.tools.train_ml_model(
 <dl>
 <dd>
 
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.tools.<a href="src/labric/tools/client.py">retrain_ml_model</a>(...) -> ToolsMlModelDetailSchema</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Retrain an existing ML model as a new version.
-
-Use after the training data has changed (for example, more vetted
-annotations) or to try a different configuration. The model keeps its
-name and identity; an omitted task_type inherits the model's existing
-one. Training is asynchronous like train-ml-model: poll the get-ml-model
-tool until status is 'ready' or 'failed'. While the new version trains,
-the model cannot serve predictions.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from labric import Labric
-from labric.environment import LabricEnvironment
-
-client = Labric(
-    api_key="<token>",
-    environment=LabricEnvironment.DEFAULT,
-)
-
-client.tools.retrain_ml_model(
-    ml_model_id="ml_model_id",
-    target_column="target_column",
-    dataset_id="dataset_id",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**ml_model_id:** `str` 
+**ml_model_id:** `typing.Optional[str]` 
     
 </dd>
 </dl>
@@ -1688,145 +1673,7 @@ client.tools.retrain_ml_model(
 <dl>
 <dd>
 
-**target_column:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**dataset_id:** `str` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**description:** `typing.Optional[str]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**task_type:** `typing.Optional[MlModelTaskType]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**quality_preset:** `typing.Optional[QualityPreset]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**feature_columns:** `typing.Optional[typing.List[str]]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**image_columns:** `typing.Optional[typing.List[str]]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**problem_type:** `typing.Optional[MlProblemType]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.tools.<a href="src/labric/tools/client.py">get_ml_model</a>(...) -> ToolsMlModelDetailSchema</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Get one ML model's training status and results.
-
-Poll this after starting a training run: status moves from 'pending'
-through 'training' to 'ready', or to 'failed' with the reason in
-error_message. Status always reflects the model's most recent training
-run; after a failed retrain, the previous ready version keeps serving
-predictions. Once ready, evaluation_metrics holds the holdout metrics
-and the model can serve predictions via the predict tool. A cloud job
-that died without reporting back is settled to 'failed' by a background
-reconciler, so keep polling through an unresponsive job.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from labric import Labric
-from labric.environment import LabricEnvironment
-
-client = Labric(
-    api_key="<token>",
-    environment=LabricEnvironment.DEFAULT,
-)
-
-client.tools.get_ml_model(
-    ml_model_id="ml_model_id",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**ml_model_id:** `str` 
+**name:** `typing.Optional[str]` 
     
 </dd>
 </dl>

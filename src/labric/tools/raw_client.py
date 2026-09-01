@@ -39,7 +39,6 @@ from ..types.tools_file_content_schema import ToolsFileContentSchema
 from ..types.tools_file_info_schema import ToolsFileInfoSchema
 from ..types.tools_job_execution_schema import ToolsJobExecutionSchema
 from ..types.tools_ml_model_detail_schema import ToolsMlModelDetailSchema
-from ..types.tools_ml_model_schema import ToolsMlModelSchema
 from ..types.validation_error_schema import ValidationErrorSchema
 from .types.labric_read_schema_mode import LabricReadSchemaMode
 from .types.labric_read_schema_target_type import LabricReadSchemaTargetType
@@ -1802,470 +1801,11 @@ class RawToolsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def list_ml_models(
-        self, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> HttpResponse[typing.List[ToolsMlModelSchema]]:
-        """
-        List the organization's ML models and the inputs each expects.
-
-        Returns each non-archived model with its serving status and prediction
-        interface: feature_columns (plus image_columns for image models) are the
-        fields each data row passed to the predict tool should contain, and
-        target_column is what the model predicts. Only models with status 'ready'
-        can serve predictions.
-
-        Parameters
-        ----------
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        HttpResponse[typing.List[ToolsMlModelSchema]]
-            OK
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            "api/v1/tools/ml-models",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    typing.List[ToolsMlModelSchema],
-                    parse_obj_as(
-                        type_=typing.List[ToolsMlModelSchema],  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return HttpResponse(response=_response, data=_data)
-            if _response.status_code == 400:
-                raise BadRequestError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 401:
-                raise UnauthorizedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 403:
-                raise ForbiddenError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 404:
-                raise NotFoundError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ValidationErrorSchema,
-                        parse_obj_as(
-                            type_=ValidationErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 500:
-                raise InternalServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        except ValidationError as e:
-            raise ParsingError(
-                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
-            )
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    def train_ml_model(
-        self,
-        *,
-        name: str,
-        target_column: str,
-        dataset_id: str,
-        description: typing.Optional[str] = OMIT,
-        task_type: typing.Optional[MlModelTaskType] = OMIT,
-        quality_preset: typing.Optional[QualityPreset] = OMIT,
-        feature_columns: typing.Optional[typing.Sequence[str]] = OMIT,
-        image_columns: typing.Optional[typing.Sequence[str]] = OMIT,
-        problem_type: typing.Optional[MlProblemType] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[ToolsMlModelDetailSchema]:
-        """
-        Create an ML model and start training it on a dataset.
-
-        Training is asynchronous: the response has status 'pending', and the
-        model trains in the cloud (minutes to hours, depending on data size and
-        quality_preset). Poll the get-ml-model tool until status is 'ready' or
-        'failed'. For task_type 'tabular', the model learns to predict
-        target_column from the dataset's other columns (restrict inputs with
-        feature_columns). For 'segmentation', train on a dataset from the
-        create-segmentation-dataset tool with target_column 'mask' and
-        image_columns ['image']. All referenced columns must exist in the
-        dataset.
-
-        Parameters
-        ----------
-        name : str
-
-        target_column : str
-
-        dataset_id : str
-
-        description : typing.Optional[str]
-
-        task_type : typing.Optional[MlModelTaskType]
-
-        quality_preset : typing.Optional[QualityPreset]
-
-        feature_columns : typing.Optional[typing.Sequence[str]]
-
-        image_columns : typing.Optional[typing.Sequence[str]]
-
-        problem_type : typing.Optional[MlProblemType]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        HttpResponse[ToolsMlModelDetailSchema]
-            OK
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            "api/v1/tools/ml-models",
-            method="POST",
-            json={
-                "name": name,
-                "description": description,
-                "task_type": task_type,
-                "target_column": target_column,
-                "quality_preset": quality_preset,
-                "dataset_id": dataset_id,
-                "feature_columns": feature_columns,
-                "image_columns": image_columns,
-                "problem_type": problem_type,
-            },
-            headers={
-                "content-type": "application/json",
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    ToolsMlModelDetailSchema,
-                    parse_obj_as(
-                        type_=ToolsMlModelDetailSchema,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return HttpResponse(response=_response, data=_data)
-            if _response.status_code == 400:
-                raise BadRequestError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 401:
-                raise UnauthorizedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 403:
-                raise ForbiddenError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 404:
-                raise NotFoundError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ValidationErrorSchema,
-                        parse_obj_as(
-                            type_=ValidationErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 500:
-                raise InternalServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 503:
-                raise ServiceUnavailableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        except ValidationError as e:
-            raise ParsingError(
-                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
-            )
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    def retrain_ml_model(
-        self,
-        ml_model_id: str,
-        *,
-        target_column: str,
-        dataset_id: str,
-        description: typing.Optional[str] = OMIT,
-        task_type: typing.Optional[MlModelTaskType] = OMIT,
-        quality_preset: typing.Optional[QualityPreset] = OMIT,
-        feature_columns: typing.Optional[typing.Sequence[str]] = OMIT,
-        image_columns: typing.Optional[typing.Sequence[str]] = OMIT,
-        problem_type: typing.Optional[MlProblemType] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[ToolsMlModelDetailSchema]:
-        """
-        Retrain an existing ML model as a new version.
-
-        Use after the training data has changed (for example, more vetted
-        annotations) or to try a different configuration. The model keeps its
-        name and identity; an omitted task_type inherits the model's existing
-        one. Training is asynchronous like train-ml-model: poll the get-ml-model
-        tool until status is 'ready' or 'failed'. While the new version trains,
-        the model cannot serve predictions.
-
-        Parameters
-        ----------
-        ml_model_id : str
-
-        target_column : str
-
-        dataset_id : str
-
-        description : typing.Optional[str]
-
-        task_type : typing.Optional[MlModelTaskType]
-
-        quality_preset : typing.Optional[QualityPreset]
-
-        feature_columns : typing.Optional[typing.Sequence[str]]
-
-        image_columns : typing.Optional[typing.Sequence[str]]
-
-        problem_type : typing.Optional[MlProblemType]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        HttpResponse[ToolsMlModelDetailSchema]
-            OK
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            f"api/v1/tools/ml-models/{encode_path_param(ml_model_id)}/versions",
-            method="POST",
-            json={
-                "description": description,
-                "task_type": task_type,
-                "target_column": target_column,
-                "quality_preset": quality_preset,
-                "dataset_id": dataset_id,
-                "feature_columns": feature_columns,
-                "image_columns": image_columns,
-                "problem_type": problem_type,
-            },
-            headers={
-                "content-type": "application/json",
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    ToolsMlModelDetailSchema,
-                    parse_obj_as(
-                        type_=ToolsMlModelDetailSchema,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return HttpResponse(response=_response, data=_data)
-            if _response.status_code == 400:
-                raise BadRequestError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 401:
-                raise UnauthorizedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 403:
-                raise ForbiddenError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 404:
-                raise NotFoundError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ValidationErrorSchema,
-                        parse_obj_as(
-                            type_=ValidationErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 500:
-                raise InternalServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 503:
-                raise ServiceUnavailableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        except ValidationError as e:
-            raise ParsingError(
-                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
-            )
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
     def get_ml_model(
         self, ml_model_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[ToolsMlModelDetailSchema]:
         """
         Get one ML model's training status and results.
-
-        Poll this after starting a training run: status moves from 'pending'
-        through 'training' to 'ready', or to 'failed' with the reason in
-        error_message. Status always reflects the model's most recent training
-        run; after a failed retrain, the previous ready version keeps serving
-        predictions. Once ready, evaluation_metrics holds the holdout metrics
-        and the model can serve predictions via the predict tool. A cloud job
-        that died without reporting back is settled to 'failed' by a background
-        reconciler, so keep polling through an unresponsive job.
 
         Parameters
         ----------
@@ -2351,6 +1891,288 @@ class RawToolsClient:
                 )
             if _response.status_code == 500:
                 raise InternalServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def list_ml_models(
+        self, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[typing.List[ToolsMlModelDetailSchema]]:
+        """
+        Returns information about models in the organization.
+        If model_id is given, return information about that model.
+        If model_id is None, return a list of all models.
+
+        Returns every non-archived model. To fetch one model by id, use the
+        get-ml-model tool instead.
+
+
+        Note that the currently active model may not be the most recently trained one.
+        Also note that the status might not be perfectly up-to-date.
+
+        Parameters
+        ----------
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[typing.List[ToolsMlModelDetailSchema]]
+            OK
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "api/v1/tools/ml-models",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    typing.List[ToolsMlModelDetailSchema],
+                    parse_obj_as(
+                        type_=typing.List[ToolsMlModelDetailSchema],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 401:
+                raise UnauthorizedError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 403:
+                raise ForbiddenError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ValidationErrorSchema,
+                        parse_obj_as(
+                            type_=ValidationErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise InternalServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def train_ml_model(
+        self,
+        *,
+        target_column: str,
+        dataset_id: str,
+        description: typing.Optional[str] = OMIT,
+        task_type: typing.Optional[MlModelTaskType] = OMIT,
+        quality_preset: typing.Optional[QualityPreset] = OMIT,
+        feature_columns: typing.Optional[typing.Sequence[str]] = OMIT,
+        image_columns: typing.Optional[typing.Sequence[str]] = OMIT,
+        problem_type: typing.Optional[MlProblemType] = OMIT,
+        ml_model_id: typing.Optional[str] = OMIT,
+        name: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[ToolsMlModelDetailSchema]:
+        """
+        API endpoint trains a ML model.
+        To train a new model, the name is required and model_id should not be provided.
+        To retrain an existing model, provide the model_id and do not provide the name.
+
+        Parameters
+        ----------
+        target_column : str
+
+        dataset_id : str
+
+        description : typing.Optional[str]
+
+        task_type : typing.Optional[MlModelTaskType]
+
+        quality_preset : typing.Optional[QualityPreset]
+
+        feature_columns : typing.Optional[typing.Sequence[str]]
+
+        image_columns : typing.Optional[typing.Sequence[str]]
+
+        problem_type : typing.Optional[MlProblemType]
+
+        ml_model_id : typing.Optional[str]
+
+        name : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[ToolsMlModelDetailSchema]
+            OK
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "api/v1/tools/ml-models",
+            method="POST",
+            json={
+                "description": description,
+                "task_type": task_type,
+                "target_column": target_column,
+                "quality_preset": quality_preset,
+                "dataset_id": dataset_id,
+                "feature_columns": feature_columns,
+                "image_columns": image_columns,
+                "problem_type": problem_type,
+                "ml_model_id": ml_model_id,
+                "name": name,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ToolsMlModelDetailSchema,
+                    parse_obj_as(
+                        type_=ToolsMlModelDetailSchema,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 401:
+                raise UnauthorizedError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 403:
+                raise ForbiddenError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ValidationErrorSchema,
+                        parse_obj_as(
+                            type_=ValidationErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise InternalServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 503:
+                raise ServiceUnavailableError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,
@@ -4234,470 +4056,11 @@ class AsyncRawToolsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def list_ml_models(
-        self, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AsyncHttpResponse[typing.List[ToolsMlModelSchema]]:
-        """
-        List the organization's ML models and the inputs each expects.
-
-        Returns each non-archived model with its serving status and prediction
-        interface: feature_columns (plus image_columns for image models) are the
-        fields each data row passed to the predict tool should contain, and
-        target_column is what the model predicts. Only models with status 'ready'
-        can serve predictions.
-
-        Parameters
-        ----------
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        AsyncHttpResponse[typing.List[ToolsMlModelSchema]]
-            OK
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            "api/v1/tools/ml-models",
-            method="GET",
-            request_options=request_options,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    typing.List[ToolsMlModelSchema],
-                    parse_obj_as(
-                        type_=typing.List[ToolsMlModelSchema],  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return AsyncHttpResponse(response=_response, data=_data)
-            if _response.status_code == 400:
-                raise BadRequestError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 401:
-                raise UnauthorizedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 403:
-                raise ForbiddenError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 404:
-                raise NotFoundError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ValidationErrorSchema,
-                        parse_obj_as(
-                            type_=ValidationErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 500:
-                raise InternalServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        except ValidationError as e:
-            raise ParsingError(
-                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
-            )
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    async def train_ml_model(
-        self,
-        *,
-        name: str,
-        target_column: str,
-        dataset_id: str,
-        description: typing.Optional[str] = OMIT,
-        task_type: typing.Optional[MlModelTaskType] = OMIT,
-        quality_preset: typing.Optional[QualityPreset] = OMIT,
-        feature_columns: typing.Optional[typing.Sequence[str]] = OMIT,
-        image_columns: typing.Optional[typing.Sequence[str]] = OMIT,
-        problem_type: typing.Optional[MlProblemType] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[ToolsMlModelDetailSchema]:
-        """
-        Create an ML model and start training it on a dataset.
-
-        Training is asynchronous: the response has status 'pending', and the
-        model trains in the cloud (minutes to hours, depending on data size and
-        quality_preset). Poll the get-ml-model tool until status is 'ready' or
-        'failed'. For task_type 'tabular', the model learns to predict
-        target_column from the dataset's other columns (restrict inputs with
-        feature_columns). For 'segmentation', train on a dataset from the
-        create-segmentation-dataset tool with target_column 'mask' and
-        image_columns ['image']. All referenced columns must exist in the
-        dataset.
-
-        Parameters
-        ----------
-        name : str
-
-        target_column : str
-
-        dataset_id : str
-
-        description : typing.Optional[str]
-
-        task_type : typing.Optional[MlModelTaskType]
-
-        quality_preset : typing.Optional[QualityPreset]
-
-        feature_columns : typing.Optional[typing.Sequence[str]]
-
-        image_columns : typing.Optional[typing.Sequence[str]]
-
-        problem_type : typing.Optional[MlProblemType]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        AsyncHttpResponse[ToolsMlModelDetailSchema]
-            OK
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            "api/v1/tools/ml-models",
-            method="POST",
-            json={
-                "name": name,
-                "description": description,
-                "task_type": task_type,
-                "target_column": target_column,
-                "quality_preset": quality_preset,
-                "dataset_id": dataset_id,
-                "feature_columns": feature_columns,
-                "image_columns": image_columns,
-                "problem_type": problem_type,
-            },
-            headers={
-                "content-type": "application/json",
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    ToolsMlModelDetailSchema,
-                    parse_obj_as(
-                        type_=ToolsMlModelDetailSchema,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return AsyncHttpResponse(response=_response, data=_data)
-            if _response.status_code == 400:
-                raise BadRequestError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 401:
-                raise UnauthorizedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 403:
-                raise ForbiddenError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 404:
-                raise NotFoundError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ValidationErrorSchema,
-                        parse_obj_as(
-                            type_=ValidationErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 500:
-                raise InternalServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 503:
-                raise ServiceUnavailableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        except ValidationError as e:
-            raise ParsingError(
-                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
-            )
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    async def retrain_ml_model(
-        self,
-        ml_model_id: str,
-        *,
-        target_column: str,
-        dataset_id: str,
-        description: typing.Optional[str] = OMIT,
-        task_type: typing.Optional[MlModelTaskType] = OMIT,
-        quality_preset: typing.Optional[QualityPreset] = OMIT,
-        feature_columns: typing.Optional[typing.Sequence[str]] = OMIT,
-        image_columns: typing.Optional[typing.Sequence[str]] = OMIT,
-        problem_type: typing.Optional[MlProblemType] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[ToolsMlModelDetailSchema]:
-        """
-        Retrain an existing ML model as a new version.
-
-        Use after the training data has changed (for example, more vetted
-        annotations) or to try a different configuration. The model keeps its
-        name and identity; an omitted task_type inherits the model's existing
-        one. Training is asynchronous like train-ml-model: poll the get-ml-model
-        tool until status is 'ready' or 'failed'. While the new version trains,
-        the model cannot serve predictions.
-
-        Parameters
-        ----------
-        ml_model_id : str
-
-        target_column : str
-
-        dataset_id : str
-
-        description : typing.Optional[str]
-
-        task_type : typing.Optional[MlModelTaskType]
-
-        quality_preset : typing.Optional[QualityPreset]
-
-        feature_columns : typing.Optional[typing.Sequence[str]]
-
-        image_columns : typing.Optional[typing.Sequence[str]]
-
-        problem_type : typing.Optional[MlProblemType]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        AsyncHttpResponse[ToolsMlModelDetailSchema]
-            OK
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            f"api/v1/tools/ml-models/{encode_path_param(ml_model_id)}/versions",
-            method="POST",
-            json={
-                "description": description,
-                "task_type": task_type,
-                "target_column": target_column,
-                "quality_preset": quality_preset,
-                "dataset_id": dataset_id,
-                "feature_columns": feature_columns,
-                "image_columns": image_columns,
-                "problem_type": problem_type,
-            },
-            headers={
-                "content-type": "application/json",
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    ToolsMlModelDetailSchema,
-                    parse_obj_as(
-                        type_=ToolsMlModelDetailSchema,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return AsyncHttpResponse(response=_response, data=_data)
-            if _response.status_code == 400:
-                raise BadRequestError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 401:
-                raise UnauthorizedError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 403:
-                raise ForbiddenError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 404:
-                raise NotFoundError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 422:
-                raise UnprocessableEntityError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ValidationErrorSchema,
-                        parse_obj_as(
-                            type_=ValidationErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 500:
-                raise InternalServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 503:
-                raise ServiceUnavailableError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        except ValidationError as e:
-            raise ParsingError(
-                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
-            )
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
     async def get_ml_model(
         self, ml_model_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[ToolsMlModelDetailSchema]:
         """
         Get one ML model's training status and results.
-
-        Poll this after starting a training run: status moves from 'pending'
-        through 'training' to 'ready', or to 'failed' with the reason in
-        error_message. Status always reflects the model's most recent training
-        run; after a failed retrain, the previous ready version keeps serving
-        predictions. Once ready, evaluation_metrics holds the holdout metrics
-        and the model can serve predictions via the predict tool. A cloud job
-        that died without reporting back is settled to 'failed' by a background
-        reconciler, so keep polling through an unresponsive job.
 
         Parameters
         ----------
@@ -4783,6 +4146,288 @@ class AsyncRawToolsClient:
                 )
             if _response.status_code == 500:
                 raise InternalServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def list_ml_models(
+        self, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[typing.List[ToolsMlModelDetailSchema]]:
+        """
+        Returns information about models in the organization.
+        If model_id is given, return information about that model.
+        If model_id is None, return a list of all models.
+
+        Returns every non-archived model. To fetch one model by id, use the
+        get-ml-model tool instead.
+
+
+        Note that the currently active model may not be the most recently trained one.
+        Also note that the status might not be perfectly up-to-date.
+
+        Parameters
+        ----------
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[typing.List[ToolsMlModelDetailSchema]]
+            OK
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "api/v1/tools/ml-models",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    typing.List[ToolsMlModelDetailSchema],
+                    parse_obj_as(
+                        type_=typing.List[ToolsMlModelDetailSchema],  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 401:
+                raise UnauthorizedError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 403:
+                raise ForbiddenError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ValidationErrorSchema,
+                        parse_obj_as(
+                            type_=ValidationErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise InternalServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def train_ml_model(
+        self,
+        *,
+        target_column: str,
+        dataset_id: str,
+        description: typing.Optional[str] = OMIT,
+        task_type: typing.Optional[MlModelTaskType] = OMIT,
+        quality_preset: typing.Optional[QualityPreset] = OMIT,
+        feature_columns: typing.Optional[typing.Sequence[str]] = OMIT,
+        image_columns: typing.Optional[typing.Sequence[str]] = OMIT,
+        problem_type: typing.Optional[MlProblemType] = OMIT,
+        ml_model_id: typing.Optional[str] = OMIT,
+        name: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[ToolsMlModelDetailSchema]:
+        """
+        API endpoint trains a ML model.
+        To train a new model, the name is required and model_id should not be provided.
+        To retrain an existing model, provide the model_id and do not provide the name.
+
+        Parameters
+        ----------
+        target_column : str
+
+        dataset_id : str
+
+        description : typing.Optional[str]
+
+        task_type : typing.Optional[MlModelTaskType]
+
+        quality_preset : typing.Optional[QualityPreset]
+
+        feature_columns : typing.Optional[typing.Sequence[str]]
+
+        image_columns : typing.Optional[typing.Sequence[str]]
+
+        problem_type : typing.Optional[MlProblemType]
+
+        ml_model_id : typing.Optional[str]
+
+        name : typing.Optional[str]
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[ToolsMlModelDetailSchema]
+            OK
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "api/v1/tools/ml-models",
+            method="POST",
+            json={
+                "description": description,
+                "task_type": task_type,
+                "target_column": target_column,
+                "quality_preset": quality_preset,
+                "dataset_id": dataset_id,
+                "feature_columns": feature_columns,
+                "image_columns": image_columns,
+                "problem_type": problem_type,
+                "ml_model_id": ml_model_id,
+                "name": name,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ToolsMlModelDetailSchema,
+                    parse_obj_as(
+                        type_=ToolsMlModelDetailSchema,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            if _response.status_code == 400:
+                raise BadRequestError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 401:
+                raise UnauthorizedError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 403:
+                raise ForbiddenError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 404:
+                raise NotFoundError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 422:
+                raise UnprocessableEntityError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ValidationErrorSchema,
+                        parse_obj_as(
+                            type_=ValidationErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 500:
+                raise InternalServerError(
+                    headers=dict(_response.headers),
+                    body=typing.cast(
+                        ErrorSchema,
+                        parse_obj_as(
+                            type_=ErrorSchema,  # type: ignore
+                            object_=_response.json(),
+                        ),
+                    ),
+                )
+            if _response.status_code == 503:
+                raise ServiceUnavailableError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,

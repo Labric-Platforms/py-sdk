@@ -32,7 +32,6 @@ if typing.TYPE_CHECKING:
     from .tools_file_info_schema import ToolsFileInfoSchema
     from .tools_job_execution_schema import ToolsJobExecutionSchema
     from .tools_ml_model_detail_schema import ToolsMlModelDetailSchema
-    from .tools_ml_model_schema import ToolsMlModelSchema
     from .validation_error_schema import ValidationErrorSchema
     from .write_plan import WritePlan
 _dynamic_imports: typing.Dict[str, str] = {
@@ -62,7 +61,6 @@ _dynamic_imports: typing.Dict[str, str] = {
     "ToolsFileInfoSchema": ".tools_file_info_schema",
     "ToolsJobExecutionSchema": ".tools_job_execution_schema",
     "ToolsMlModelDetailSchema": ".tools_ml_model_detail_schema",
-    "ToolsMlModelSchema": ".tools_ml_model_schema",
     "ValidationErrorSchema": ".validation_error_schema",
     "WritePlan": ".write_plan",
 }
@@ -116,7 +114,6 @@ __all__ = [
     "ToolsFileInfoSchema",
     "ToolsJobExecutionSchema",
     "ToolsMlModelDetailSchema",
-    "ToolsMlModelSchema",
     "ValidationErrorSchema",
     "WritePlan",
 ]
