@@ -42,7 +42,7 @@ client = Labric(
     api_key="<token>",
 )
 
-client.agent.run(
+client.agent.run_stream(
     prompt="prompt",
 )
 ```
@@ -75,7 +75,7 @@ client = AsyncLabric(
 
 
 async def main() -> None:
-    await client.agent.run(
+    await client.agent.run_stream(
         prompt="prompt",
     )
 
@@ -92,7 +92,7 @@ will be thrown.
 from labric.core.api_error import ApiError
 
 try:
-    client.agent.run(...)
+    client.agent.run_stream(...)
 except ApiError as e:
     print(e.status_code)
     print(e.body)
@@ -125,7 +125,7 @@ The `.with_raw_response` property returns a "raw" client that can be used to acc
 from labric import Labric
 
 client = Labric(...)
-response = client.agent.with_raw_response.run(...)
+response = client.agent.with_raw_response.run_stream(...)
 print(response.headers)  # access the response headers
 print(response.status_code)  # access the response status code
 print(response.data)  # access the underlying object
@@ -156,7 +156,7 @@ Which status codes are retried depends on the `retryStatusCodes` generator confi
 Use the `max_retries` request option to configure this behavior.
 
 ```python
-client.agent.run(..., request_options={
+client.agent.run_stream(..., request_options={
     "max_retries": 1
 })
 ```
@@ -171,7 +171,7 @@ from labric import Labric
 client = Labric(..., timeout=20.0)
 
 # Override timeout for a specific method
-client.agent.run(..., request_options={
+client.agent.run_stream(..., request_options={
     "timeout_in_seconds": 1
 })
 ```
