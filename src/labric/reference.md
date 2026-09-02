@@ -20,6 +20,8 @@ event if the run fails; prefer streaming for long analyses. Pass chat_id
 to continue a saved conversation, or save=true to save the run as a new
 chat visible in the web UI; if saving fails, the answer is still returned
 but its chat_id is null.
+
+Requires an API key with the `read` scope.
 </dd>
 </dl>
 </dd>
@@ -132,6 +134,8 @@ event if the run fails; prefer streaming for long analyses. Pass chat_id
 to continue a saved conversation, or save=true to save the run as a new
 chat visible in the web UI; if saving fails, the answer is still returned
 but its chat_id is null.
+
+Requires an API key with the `read` scope.
 </dd>
 </dl>
 </dd>
@@ -246,6 +250,8 @@ human-vetted annotation with that label, with columns 'image' (the image
 file id) and 'mask' (the mask blob path). Pass the returned dataset id to
 the train-ml-model tool with task_type 'segmentation', target_column
 'mask', and image_columns ['image'].
+
+Requires an API key with the `write` scope.
 </dd>
 </dl>
 </dd>
@@ -340,6 +346,8 @@ Inserts or updates records in the specified target table. Supports batch
 inserts, upserts with match columns, default value functions (DATETIME_NOW,
 UUID4), and optional dry-run validation. A job execution is created
 automatically if one is not provided.
+
+Requires an API key with the `write` scope.
 </dd>
 </dl>
 </dd>
@@ -504,6 +512,8 @@ Read records from a table.
 Returns records from the specified table matching the given filters.
 Use 'single' mode to retrieve exactly one record, or 'multiple' mode
 to retrieve all matching records.
+
+Requires an API key with the `read` scope.
 </dd>
 </dl>
 </dd>
@@ -609,6 +619,8 @@ parameters via a params list. Use the schema tool to discover tables
 first, and reference each column by its sql_column_name — foreign keys
 carry an _id suffix in SQL (e.g. a 'sample' reference is the 'sample_id'
 column).
+
+Requires an API key with the `read` scope.
 </dd>
 </dl>
 </dd>
@@ -698,6 +710,8 @@ sandbox, which also records provenance linking the file to that execution,
 and pass an instrument_id for data captured off-platform by an instrument the
 Sync app cannot reach, which attaches the file to that instrument so
 instrument triggers and parsers pick it up.
+
+Requires an API key with the `write` scope.
 </dd>
 </dl>
 </dd>
@@ -795,6 +809,8 @@ names: 'name' is what the read and write tools accept, and 'sql_column_name'
 is the physical column for SQL queries (foreign keys carry an _id suffix).
 This is the map a parser writes into: use it to plan which tables to
 populate and how rows link.
+
+Requires an API key with the `read` scope.
 </dd>
 </dl>
 </dd>
@@ -863,6 +879,8 @@ Returns a representative set of uploaded files for the org, newest first.
 Filter by instrument_id, comma-separated file extensions (e.g. "csv,txt"),
 or a substring of the file name. Use the file-content tool to inspect a
 file's raw contents.
+
+Requires an API key with the `read` scope.
 </dd>
 </dl>
 </dd>
@@ -962,6 +980,8 @@ Fetch a source file's content for inspecting raw instrument output.
 Returns a presigned download URL plus a best-effort UTF-8 text preview of
 the start of the file. Large files return a URL only (no inline preview);
 fetch the full bytes via the URL when needed.
+
+Requires an API key with the `read` scope.
 </dd>
 </dl>
 </dd>
@@ -1046,6 +1066,8 @@ the update-status tool when the script finishes. Pass timeout_minutes to
 have the platform fail the execution after that duration elapses, if the
 script has not closed it in time. This prevents crashed scripts from
 leaving jobs marked as running forever on the platform.
+
+Requires an API key with the `write` scope.
 </dd>
 </dl>
 </dd>
@@ -1125,6 +1147,8 @@ reporting the run as in progress. Either status is final: re-sending the
 status the execution already has is a no-op, but changing it afterwards is
 rejected. Only executions opened by the start tool are accepted — every
 other execution's status is recorded by the platform itself.
+
+Requires an API key with the `write` scope.
 </dd>
 </dl>
 </dd>
@@ -1212,6 +1236,8 @@ Deletes the CREATE'd objects of a job execution and their linked raw rows,
 in a single transaction. Use this to undo a test write whose validation
 failed. UPDATE and DELETE operations cannot be reversed and are surfaced as
 warnings in the result.
+
+Requires an API key with the `write` scope.
 </dd>
 </dl>
 </dd>
@@ -1296,6 +1322,8 @@ Supports:
 Committed writes are recorded against a job execution (created automatically
 if not supplied) and the job_execution_id is returned, so the write can be
 reverted as a unit.
+
+Requires an API key with the `write` scope.
 </dd>
 </dl>
 </dd>
@@ -1389,6 +1417,8 @@ non-archived model). Each row in data maps the model's feature columns to
 values -- use the ml-models tool to discover models and the columns each
 expects. Returns one prediction per input row, plus per-class
 probabilities for classifiers.
+
+Requires an API key with the `read` scope.
 </dd>
 </dl>
 </dd>
@@ -1482,6 +1512,8 @@ client.tools.predict(
 <dd>
 
 Get one ML model's training status and results.
+
+Requires an API key with the `read` scope.
 </dd>
 </dl>
 </dd>
@@ -1564,6 +1596,8 @@ get-ml-model tool instead.
 
 Note that the currently active model may not be the most recently trained one.
 Also note that the status might not be perfectly up-to-date.
+
+Requires an API key with the `read` scope.
 </dd>
 </dl>
 </dd>
@@ -1629,6 +1663,8 @@ client.tools.list_ml_models()
 API endpoint trains a ML model.
 To train a new model, the name is required and model_id should not be provided.
 To retrain an existing model, provide the model_id and do not provide the name.
+
+Requires an API key with the `write` scope.
 </dd>
 </dl>
 </dd>
@@ -1780,6 +1816,8 @@ Overlapping retrains can leave several versions pending or training at
 once, so the cancel is model-wide: every in-flight version is marked
 'cancelled' and its cloud training jobs are stopped. Returns 400 when
 no training is pending or running.
+
+Requires an API key with the `write` scope.
 </dd>
 </dl>
 </dd>

@@ -73,6 +73,8 @@ class RawToolsClient:
         the train-ml-model tool with task_type 'segmentation', target_column
         'mask', and image_columns ['image'].
 
+        Requires an API key with the `write` scope.
+
         Parameters
         ----------
         label_id : str
@@ -211,6 +213,8 @@ class RawToolsClient:
         inserts, upserts with match columns, default value functions (DATETIME_NOW,
         UUID4), and optional dry-run validation. A job execution is created
         automatically if one is not provided.
+
+        Requires an API key with the `write` scope.
 
         Parameters
         ----------
@@ -378,6 +382,8 @@ class RawToolsClient:
         Use 'single' mode to retrieve exactly one record, or 'multiple' mode
         to retrieve all matching records.
 
+        Requires an API key with the `read` scope.
+
         Parameters
         ----------
         target_name : str
@@ -516,6 +522,8 @@ class RawToolsClient:
         first, and reference each column by its sql_column_name — foreign keys
         carry an _id suffix in SQL (e.g. a 'sample' reference is the 'sample_id'
         column).
+
+        Requires an API key with the `read` scope.
 
         Parameters
         ----------
@@ -659,6 +667,8 @@ class RawToolsClient:
         Sync app cannot reach, which attaches the file to that instrument so
         instrument triggers and parsers pick it up.
 
+        Requires an API key with the `write` scope.
+
         Parameters
         ----------
         file : core.File
@@ -800,6 +810,8 @@ class RawToolsClient:
         This is the map a parser writes into: use it to plan which tables to
         populate and how rows link.
 
+        Requires an API key with the `read` scope.
+
         Parameters
         ----------
         request_options : typing.Optional[RequestOptions]
@@ -916,6 +928,8 @@ class RawToolsClient:
         Filter by instrument_id, comma-separated file extensions (e.g. "csv,txt"),
         or a substring of the file name. Use the file-content tool to inspect a
         file's raw contents.
+
+        Requires an API key with the `read` scope.
 
         Parameters
         ----------
@@ -1041,6 +1055,8 @@ class RawToolsClient:
         the start of the file. Large files return a URL only (no inline preview);
         fetch the full bytes via the URL when needed.
 
+        Requires an API key with the `read` scope.
+
         Parameters
         ----------
         file_id : str
@@ -1163,6 +1179,8 @@ class RawToolsClient:
         script has not closed it in time. This prevents crashed scripts from
         leaving jobs marked as running forever on the platform.
 
+        Requires an API key with the `write` scope.
+
         Parameters
         ----------
         request : typing.Optional[StartJobExecutionSchema]
@@ -1284,6 +1302,8 @@ class RawToolsClient:
         status the execution already has is a no-op, but changing it afterwards is
         rejected. Only executions opened by the start tool are accepted — every
         other execution's status is recorded by the platform itself.
+
+        Requires an API key with the `write` scope.
 
         Parameters
         ----------
@@ -1408,6 +1428,8 @@ class RawToolsClient:
         failed. UPDATE and DELETE operations cannot be reversed and are surfaced as
         warnings in the result.
 
+        Requires an API key with the `write` scope.
+
         Parameters
         ----------
         execution_id : str
@@ -1530,6 +1552,8 @@ class RawToolsClient:
         Committed writes are recorded against a job execution (created automatically
         if not supplied) and the job_execution_id is returned, so the write can be
         reverted as a unit.
+
+        Requires an API key with the `write` scope.
 
         Parameters
         ----------
@@ -1663,6 +1687,8 @@ class RawToolsClient:
         values -- use the ml-models tool to discover models and the columns each
         expects. Returns one prediction per input row, plus per-class
         probabilities for classifiers.
+
+        Requires an API key with the `read` scope.
 
         Parameters
         ----------
@@ -1807,6 +1833,8 @@ class RawToolsClient:
         """
         Get one ML model's training status and results.
 
+        Requires an API key with the `read` scope.
+
         Parameters
         ----------
         ml_model_id : str
@@ -1923,6 +1951,8 @@ class RawToolsClient:
 
         Note that the currently active model may not be the most recently trained one.
         Also note that the status might not be perfectly up-to-date.
+
+        Requires an API key with the `read` scope.
 
         Parameters
         ----------
@@ -2043,6 +2073,8 @@ class RawToolsClient:
         API endpoint trains a ML model.
         To train a new model, the name is required and model_id should not be provided.
         To retrain an existing model, provide the model_id and do not provide the name.
+
+        Requires an API key with the `write` scope.
 
         Parameters
         ----------
@@ -2202,6 +2234,8 @@ class RawToolsClient:
         'cancelled' and its cloud training jobs are stopped. Returns 400 when
         no training is pending or running.
 
+        Requires an API key with the `write` scope.
+
         Parameters
         ----------
         ml_model_id : str
@@ -2327,6 +2361,8 @@ class AsyncRawToolsClient:
         file id) and 'mask' (the mask blob path). Pass the returned dataset id to
         the train-ml-model tool with task_type 'segmentation', target_column
         'mask', and image_columns ['image'].
+
+        Requires an API key with the `write` scope.
 
         Parameters
         ----------
@@ -2466,6 +2502,8 @@ class AsyncRawToolsClient:
         inserts, upserts with match columns, default value functions (DATETIME_NOW,
         UUID4), and optional dry-run validation. A job execution is created
         automatically if one is not provided.
+
+        Requires an API key with the `write` scope.
 
         Parameters
         ----------
@@ -2633,6 +2671,8 @@ class AsyncRawToolsClient:
         Use 'single' mode to retrieve exactly one record, or 'multiple' mode
         to retrieve all matching records.
 
+        Requires an API key with the `read` scope.
+
         Parameters
         ----------
         target_name : str
@@ -2771,6 +2811,8 @@ class AsyncRawToolsClient:
         first, and reference each column by its sql_column_name — foreign keys
         carry an _id suffix in SQL (e.g. a 'sample' reference is the 'sample_id'
         column).
+
+        Requires an API key with the `read` scope.
 
         Parameters
         ----------
@@ -2914,6 +2956,8 @@ class AsyncRawToolsClient:
         Sync app cannot reach, which attaches the file to that instrument so
         instrument triggers and parsers pick it up.
 
+        Requires an API key with the `write` scope.
+
         Parameters
         ----------
         file : core.File
@@ -3055,6 +3099,8 @@ class AsyncRawToolsClient:
         This is the map a parser writes into: use it to plan which tables to
         populate and how rows link.
 
+        Requires an API key with the `read` scope.
+
         Parameters
         ----------
         request_options : typing.Optional[RequestOptions]
@@ -3171,6 +3217,8 @@ class AsyncRawToolsClient:
         Filter by instrument_id, comma-separated file extensions (e.g. "csv,txt"),
         or a substring of the file name. Use the file-content tool to inspect a
         file's raw contents.
+
+        Requires an API key with the `read` scope.
 
         Parameters
         ----------
@@ -3296,6 +3344,8 @@ class AsyncRawToolsClient:
         the start of the file. Large files return a URL only (no inline preview);
         fetch the full bytes via the URL when needed.
 
+        Requires an API key with the `read` scope.
+
         Parameters
         ----------
         file_id : str
@@ -3418,6 +3468,8 @@ class AsyncRawToolsClient:
         script has not closed it in time. This prevents crashed scripts from
         leaving jobs marked as running forever on the platform.
 
+        Requires an API key with the `write` scope.
+
         Parameters
         ----------
         request : typing.Optional[StartJobExecutionSchema]
@@ -3539,6 +3591,8 @@ class AsyncRawToolsClient:
         status the execution already has is a no-op, but changing it afterwards is
         rejected. Only executions opened by the start tool are accepted — every
         other execution's status is recorded by the platform itself.
+
+        Requires an API key with the `write` scope.
 
         Parameters
         ----------
@@ -3663,6 +3717,8 @@ class AsyncRawToolsClient:
         failed. UPDATE and DELETE operations cannot be reversed and are surfaced as
         warnings in the result.
 
+        Requires an API key with the `write` scope.
+
         Parameters
         ----------
         execution_id : str
@@ -3785,6 +3841,8 @@ class AsyncRawToolsClient:
         Committed writes are recorded against a job execution (created automatically
         if not supplied) and the job_execution_id is returned, so the write can be
         reverted as a unit.
+
+        Requires an API key with the `write` scope.
 
         Parameters
         ----------
@@ -3918,6 +3976,8 @@ class AsyncRawToolsClient:
         values -- use the ml-models tool to discover models and the columns each
         expects. Returns one prediction per input row, plus per-class
         probabilities for classifiers.
+
+        Requires an API key with the `read` scope.
 
         Parameters
         ----------
@@ -4062,6 +4122,8 @@ class AsyncRawToolsClient:
         """
         Get one ML model's training status and results.
 
+        Requires an API key with the `read` scope.
+
         Parameters
         ----------
         ml_model_id : str
@@ -4178,6 +4240,8 @@ class AsyncRawToolsClient:
 
         Note that the currently active model may not be the most recently trained one.
         Also note that the status might not be perfectly up-to-date.
+
+        Requires an API key with the `read` scope.
 
         Parameters
         ----------
@@ -4298,6 +4362,8 @@ class AsyncRawToolsClient:
         API endpoint trains a ML model.
         To train a new model, the name is required and model_id should not be provided.
         To retrain an existing model, provide the model_id and do not provide the name.
+
+        Requires an API key with the `write` scope.
 
         Parameters
         ----------
@@ -4456,6 +4522,8 @@ class AsyncRawToolsClient:
         once, so the cancel is model-wide: every in-flight version is marked
         'cancelled' and its cloud training jobs are stopped. Returns 400 when
         no training is pending or running.
+
+        Requires an API key with the `write` scope.
 
         Parameters
         ----------

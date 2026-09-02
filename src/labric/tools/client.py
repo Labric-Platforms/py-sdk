@@ -65,6 +65,8 @@ class ToolsClient:
         the train-ml-model tool with task_type 'segmentation', target_column
         'mask', and image_columns ['image'].
 
+        Requires an API key with the `write` scope.
+
         Parameters
         ----------
         label_id : str
@@ -120,6 +122,8 @@ class ToolsClient:
         inserts, upserts with match columns, default value functions (DATETIME_NOW,
         UUID4), and optional dry-run validation. A job execution is created
         automatically if one is not provided.
+
+        Requires an API key with the `write` scope.
 
         Parameters
         ----------
@@ -210,6 +214,8 @@ class ToolsClient:
         Use 'single' mode to retrieve exactly one record, or 'multiple' mode
         to retrieve all matching records.
 
+        Requires an API key with the `read` scope.
+
         Parameters
         ----------
         target_name : str
@@ -270,6 +276,8 @@ class ToolsClient:
         carry an _id suffix in SQL (e.g. a 'sample' reference is the 'sample_id'
         column).
 
+        Requires an API key with the `read` scope.
+
         Parameters
         ----------
         query : str
@@ -317,6 +325,8 @@ class ToolsClient:
         Sync app cannot reach, which attaches the file to that instrument so
         instrument triggers and parsers pick it up.
 
+        Requires an API key with the `write` scope.
+
         Parameters
         ----------
         file : core.File
@@ -362,6 +372,8 @@ class ToolsClient:
         This is the map a parser writes into: use it to plan which tables to
         populate and how rows link.
 
+        Requires an API key with the `read` scope.
+
         Parameters
         ----------
         request_options : typing.Optional[RequestOptions]
@@ -400,6 +412,8 @@ class ToolsClient:
         Filter by instrument_id, comma-separated file extensions (e.g. "csv,txt"),
         or a substring of the file name. Use the file-content tool to inspect a
         file's raw contents.
+
+        Requires an API key with the `read` scope.
 
         Parameters
         ----------
@@ -447,6 +461,8 @@ class ToolsClient:
         the start of the file. Large files return a URL only (no inline preview);
         fetch the full bytes via the URL when needed.
 
+        Requires an API key with the `read` scope.
+
         Parameters
         ----------
         file_id : str
@@ -493,6 +509,8 @@ class ToolsClient:
         script has not closed it in time. This prevents crashed scripts from
         leaving jobs marked as running forever on the platform.
 
+        Requires an API key with the `write` scope.
+
         Parameters
         ----------
         request : typing.Optional[StartJobExecutionSchema]
@@ -534,6 +552,8 @@ class ToolsClient:
         status the execution already has is a no-op, but changing it afterwards is
         rejected. Only executions opened by the start tool are accepted — every
         other execution's status is recorded by the platform itself.
+
+        Requires an API key with the `write` scope.
 
         Parameters
         ----------
@@ -577,6 +597,8 @@ class ToolsClient:
         in a single transaction. Use this to undo a test write whose validation
         failed. UPDATE and DELETE operations cannot be reversed and are surfaced as
         warnings in the result.
+
+        Requires an API key with the `write` scope.
 
         Parameters
         ----------
@@ -625,6 +647,8 @@ class ToolsClient:
         if not supplied) and the job_execution_id is returned, so the write can be
         reverted as a unit.
 
+        Requires an API key with the `write` scope.
+
         Parameters
         ----------
         tables : typing.Dict[str, typing.Sequence[typing.Dict[str, typing.Any]]]
@@ -672,6 +696,8 @@ class ToolsClient:
         expects. Returns one prediction per input row, plus per-class
         probabilities for classifiers.
 
+        Requires an API key with the `read` scope.
+
         Parameters
         ----------
         data : typing.Sequence[typing.Dict[str, typing.Any]]
@@ -709,6 +735,8 @@ class ToolsClient:
     ) -> ToolsMlModelDetailSchema:
         """
         Get one ML model's training status and results.
+
+        Requires an API key with the `read` scope.
 
         Parameters
         ----------
@@ -751,6 +779,8 @@ class ToolsClient:
         Note that the currently active model may not be the most recently trained one.
         Also note that the status might not be perfectly up-to-date.
 
+        Requires an API key with the `read` scope.
+
         Parameters
         ----------
         request_options : typing.Optional[RequestOptions]
@@ -792,6 +822,8 @@ class ToolsClient:
         API endpoint trains a ML model.
         To train a new model, the name is required and model_id should not be provided.
         To retrain an existing model, provide the model_id and do not provide the name.
+
+        Requires an API key with the `write` scope.
 
         Parameters
         ----------
@@ -861,6 +893,8 @@ class ToolsClient:
         'cancelled' and its cloud training jobs are stopped. Returns 400 when
         no training is pending or running.
 
+        Requires an API key with the `write` scope.
+
         Parameters
         ----------
         ml_model_id : str
@@ -921,6 +955,8 @@ class AsyncToolsClient:
         file id) and 'mask' (the mask blob path). Pass the returned dataset id to
         the train-ml-model tool with task_type 'segmentation', target_column
         'mask', and image_columns ['image'].
+
+        Requires an API key with the `write` scope.
 
         Parameters
         ----------
@@ -985,6 +1021,8 @@ class AsyncToolsClient:
         inserts, upserts with match columns, default value functions (DATETIME_NOW,
         UUID4), and optional dry-run validation. A job execution is created
         automatically if one is not provided.
+
+        Requires an API key with the `write` scope.
 
         Parameters
         ----------
@@ -1083,6 +1121,8 @@ class AsyncToolsClient:
         Use 'single' mode to retrieve exactly one record, or 'multiple' mode
         to retrieve all matching records.
 
+        Requires an API key with the `read` scope.
+
         Parameters
         ----------
         target_name : str
@@ -1151,6 +1191,8 @@ class AsyncToolsClient:
         carry an _id suffix in SQL (e.g. a 'sample' reference is the 'sample_id'
         column).
 
+        Requires an API key with the `read` scope.
+
         Parameters
         ----------
         query : str
@@ -1206,6 +1248,8 @@ class AsyncToolsClient:
         Sync app cannot reach, which attaches the file to that instrument so
         instrument triggers and parsers pick it up.
 
+        Requires an API key with the `write` scope.
+
         Parameters
         ----------
         file : core.File
@@ -1259,6 +1303,8 @@ class AsyncToolsClient:
         This is the map a parser writes into: use it to plan which tables to
         populate and how rows link.
 
+        Requires an API key with the `read` scope.
+
         Parameters
         ----------
         request_options : typing.Optional[RequestOptions]
@@ -1305,6 +1351,8 @@ class AsyncToolsClient:
         Filter by instrument_id, comma-separated file extensions (e.g. "csv,txt"),
         or a substring of the file name. Use the file-content tool to inspect a
         file's raw contents.
+
+        Requires an API key with the `read` scope.
 
         Parameters
         ----------
@@ -1360,6 +1408,8 @@ class AsyncToolsClient:
         the start of the file. Large files return a URL only (no inline preview);
         fetch the full bytes via the URL when needed.
 
+        Requires an API key with the `read` scope.
+
         Parameters
         ----------
         file_id : str
@@ -1414,6 +1464,8 @@ class AsyncToolsClient:
         script has not closed it in time. This prevents crashed scripts from
         leaving jobs marked as running forever on the platform.
 
+        Requires an API key with the `write` scope.
+
         Parameters
         ----------
         request : typing.Optional[StartJobExecutionSchema]
@@ -1463,6 +1515,8 @@ class AsyncToolsClient:
         status the execution already has is a no-op, but changing it afterwards is
         rejected. Only executions opened by the start tool are accepted — every
         other execution's status is recorded by the platform itself.
+
+        Requires an API key with the `write` scope.
 
         Parameters
         ----------
@@ -1514,6 +1568,8 @@ class AsyncToolsClient:
         in a single transaction. Use this to undo a test write whose validation
         failed. UPDATE and DELETE operations cannot be reversed and are surfaced as
         warnings in the result.
+
+        Requires an API key with the `write` scope.
 
         Parameters
         ----------
@@ -1570,6 +1626,8 @@ class AsyncToolsClient:
         if not supplied) and the job_execution_id is returned, so the write can be
         reverted as a unit.
 
+        Requires an API key with the `write` scope.
+
         Parameters
         ----------
         tables : typing.Dict[str, typing.Sequence[typing.Dict[str, typing.Any]]]
@@ -1625,6 +1683,8 @@ class AsyncToolsClient:
         expects. Returns one prediction per input row, plus per-class
         probabilities for classifiers.
 
+        Requires an API key with the `read` scope.
+
         Parameters
         ----------
         data : typing.Sequence[typing.Dict[str, typing.Any]]
@@ -1670,6 +1730,8 @@ class AsyncToolsClient:
     ) -> ToolsMlModelDetailSchema:
         """
         Get one ML model's training status and results.
+
+        Requires an API key with the `read` scope.
 
         Parameters
         ----------
@@ -1720,6 +1782,8 @@ class AsyncToolsClient:
         Note that the currently active model may not be the most recently trained one.
         Also note that the status might not be perfectly up-to-date.
 
+        Requires an API key with the `read` scope.
+
         Parameters
         ----------
         request_options : typing.Optional[RequestOptions]
@@ -1769,6 +1833,8 @@ class AsyncToolsClient:
         API endpoint trains a ML model.
         To train a new model, the name is required and model_id should not be provided.
         To retrain an existing model, provide the model_id and do not provide the name.
+
+        Requires an API key with the `write` scope.
 
         Parameters
         ----------
@@ -1845,6 +1911,8 @@ class AsyncToolsClient:
         once, so the cancel is model-wide: every in-flight version is marked
         'cancelled' and its cloud training jobs are stopped. Returns 400 when
         no training is pending or running.
+
+        Requires an API key with the `write` scope.
 
         Parameters
         ----------

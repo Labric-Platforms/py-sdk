@@ -46,6 +46,8 @@ class AgentClient:
         chat visible in the web UI; if saving fails, the answer is still returned
         but its chat_id is null.
 
+        Requires an API key with the `read` scope.
+
         Parameters
         ----------
         prompt : str
@@ -100,6 +102,8 @@ class AgentClient:
         to continue a saved conversation, or save=true to save the run as a new
         chat visible in the web UI; if saving fails, the answer is still returned
         but its chat_id is null.
+
+        Requires an API key with the `read` scope.
 
         Parameters
         ----------
@@ -170,6 +174,8 @@ class AsyncAgentClient:
         chat visible in the web UI; if saving fails, the answer is still returned
         but its chat_id is null.
 
+        Requires an API key with the `read` scope.
+
         Parameters
         ----------
         prompt : str
@@ -233,6 +239,8 @@ class AsyncAgentClient:
         to continue a saved conversation, or save=true to save the run as a new
         chat visible in the web UI; if saving fails, the answer is still returned
         but its chat_id is null.
+
+        Requires an API key with the `read` scope.
 
         Parameters
         ----------
