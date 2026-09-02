@@ -1,5 +1,5 @@
 # Reference
-## Agent
+## agent
 <details><summary><code>client.agent.<a href="src/labric/agent/client.py">run_stream</a>(...) -> typing.Iterator[bytes]</code></summary>
 <dl>
 <dd>
@@ -228,7 +228,7 @@ client.agent.run_stream(
 </dl>
 </details>
 
-## Tools
+## tools
 <details><summary><code>client.tools.<a href="src/labric/tools/client.py">create_segmentation_dataset</a>(...) -> DatasetSchema</code></summary>
 <dl>
 <dd>
