@@ -13,6 +13,7 @@ from .environment import LabricEnvironment
 
 if typing.TYPE_CHECKING:
     from .agent.client import AgentClient, AsyncAgentClient
+    from .models.client import AsyncModelsClient, ModelsClient
     from .tools.client import AsyncToolsClient, ToolsClient
 
 
@@ -106,6 +107,7 @@ class BaseLabric:
         )
         self._agent: typing.Optional[AgentClient] = None
         self._tools: typing.Optional[ToolsClient] = None
+        self._models: typing.Optional[ModelsClient] = None
 
     @property
     def agent(self):
@@ -122,6 +124,14 @@ class BaseLabric:
 
             self._tools = ToolsClient(client_wrapper=self._client_wrapper)
         return self._tools
+
+    @property
+    def models(self):
+        if self._models is None:
+            from .models.client import ModelsClient  # noqa: E402
+
+            self._models = ModelsClient(client_wrapper=self._client_wrapper)
+        return self._models
 
 
 def _make_default_async_client(
@@ -235,6 +245,7 @@ class AsyncBaseLabric:
         )
         self._agent: typing.Optional[AsyncAgentClient] = None
         self._tools: typing.Optional[AsyncToolsClient] = None
+        self._models: typing.Optional[AsyncModelsClient] = None
 
     @property
     def agent(self):
@@ -251,6 +262,14 @@ class AsyncBaseLabric:
 
             self._tools = AsyncToolsClient(client_wrapper=self._client_wrapper)
         return self._tools
+
+    @property
+    def models(self):
+        if self._models is None:
+            from .models.client import AsyncModelsClient  # noqa: E402
+
+            self._models = AsyncModelsClient(client_wrapper=self._client_wrapper)
+        return self._models
 
 
 def _get_base_url(*, base_url: typing.Optional[str] = None, environment: LabricEnvironment) -> str:

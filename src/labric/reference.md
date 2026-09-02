@@ -1398,7 +1398,8 @@ client.tools.batch_write(
 </dl>
 </details>
 
-<details><summary><code>client.tools.<a href="src/labric/tools/client.py">predict</a>(...) -> PredictResponseSchema</code></summary>
+## models
+<details><summary><code>client.models.<a href="src/labric/models/client.py">predict</a>(...) -> PredictResponseSchema</code></summary>
 <dl>
 <dd>
 
@@ -1441,7 +1442,7 @@ client = Labric(
     environment=LabricEnvironment.DEFAULT,
 )
 
-client.tools.predict(
+client.models.predict(
     data=[
         {
             "key": "value"
@@ -1499,7 +1500,7 @@ client.tools.predict(
 </dl>
 </details>
 
-<details><summary><code>client.tools.<a href="src/labric/tools/client.py">get_ml_model</a>(...) -> ToolsMlModelDetailSchema</code></summary>
+<details><summary><code>client.models.<a href="src/labric/models/client.py">get</a>(...) -> ToolsMlModelDetailSchema</code></summary>
 <dl>
 <dd>
 
@@ -1536,7 +1537,7 @@ client = Labric(
     environment=LabricEnvironment.DEFAULT,
 )
 
-client.tools.get_ml_model(
+client.models.get(
     ml_model_id="ml_model_id",
 )
 
@@ -1574,7 +1575,7 @@ client.tools.get_ml_model(
 </dl>
 </details>
 
-<details><summary><code>client.tools.<a href="src/labric/tools/client.py">list_ml_models</a>() -> typing.List[ToolsMlModelDetailSchema]</code></summary>
+<details><summary><code>client.models.<a href="src/labric/models/client.py">list</a>() -> typing.List[ToolsMlModelDetailSchema]</code></summary>
 <dl>
 <dd>
 
@@ -1620,7 +1621,7 @@ client = Labric(
     environment=LabricEnvironment.DEFAULT,
 )
 
-client.tools.list_ml_models()
+client.models.list()
 
 ```
 </dd>
@@ -1648,7 +1649,7 @@ client.tools.list_ml_models()
 </dl>
 </details>
 
-<details><summary><code>client.tools.<a href="src/labric/tools/client.py">train_ml_model</a>(...) -> ToolsMlModelDetailSchema</code></summary>
+<details><summary><code>client.models.<a href="src/labric/models/client.py">train</a>(...) -> ToolsMlModelDetailSchema</code></summary>
 <dl>
 <dd>
 
@@ -1687,7 +1688,7 @@ client = Labric(
     environment=LabricEnvironment.DEFAULT,
 )
 
-client.tools.train_ml_model(
+client.models.train(
     target_column="target_column",
     dataset_id="dataset_id",
 )
@@ -1798,7 +1799,7 @@ client.tools.train_ml_model(
 </dl>
 </details>
 
-<details><summary><code>client.tools.<a href="src/labric/tools/client.py">cancel_ml_model_training</a>(...) -> ToolsMlModelDetailSchema</code></summary>
+<details><summary><code>client.models.<a href="src/labric/models/client.py">cancel_training</a>(...) -> ToolsMlModelDetailSchema</code></summary>
 <dl>
 <dd>
 
@@ -1840,7 +1841,7 @@ client = Labric(
     environment=LabricEnvironment.DEFAULT,
 )
 
-client.tools.cancel_ml_model_training(
+client.models.cancel_training(
     ml_model_id="ml_model_id",
 )
 

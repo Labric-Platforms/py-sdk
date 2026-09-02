@@ -48,7 +48,7 @@ if typing.TYPE_CHECKING:
         UnauthorizedError,
         UnprocessableEntityError,
     )
-    from . import agent, tools
+    from . import agent, models, tools
     from ._default_clients import DefaultAioHttpClient, DefaultAsyncHttpxClient
     from .client import AsyncLabric, Labric
     from .environment import LabricEnvironment
@@ -107,6 +107,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "ValidationErrorSchema": ".types",
     "WritePlan": ".types",
     "agent": ".agent",
+    "models": ".models",
     "tools": ".tools",
 }
 
@@ -181,5 +182,6 @@ __all__ = [
     "ValidationErrorSchema",
     "WritePlan",
     "agent",
+    "models",
     "tools",
 ]
