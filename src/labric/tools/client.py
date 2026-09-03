@@ -7,7 +7,6 @@ from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from ..types.batch_write_options import BatchWriteOptions
 from ..types.batch_write_response import BatchWriteResponse
-from ..types.dataset_schema import DatasetSchema
 from ..types.labric_upload_file_schema import LabricUploadFileSchema
 from ..types.query_result import QueryResult
 from ..types.revert_result_schema import RevertResultSchema
@@ -40,59 +39,6 @@ class ToolsClient:
         RawToolsClient
         """
         return self._raw_client
-
-    def create_segmentation_dataset(
-        self,
-        *,
-        label_id: str,
-        name: typing.Optional[str] = OMIT,
-        description: typing.Optional[str] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> DatasetSchema:
-        """
-        Create an (image, mask) training dataset from an annotation label's
-        human-vetted masks.
-
-        label_id is the id of an image annotation label (the
-        core_imageannotationlabel table); the dataset contains one row per
-        human-vetted annotation with that label, with columns 'image' (the image
-        file id) and 'mask' (the mask blob path). Pass the returned dataset id to
-        the train-ml-model tool with task_type 'segmentation', target_column
-        'mask', and image_columns ['image'].
-
-        Requires an API key with the `write` scope.
-
-        Parameters
-        ----------
-        label_id : str
-
-        name : typing.Optional[str]
-
-        description : typing.Optional[str]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        DatasetSchema
-            OK
-
-        Examples
-        --------
-        from labric import Labric
-
-        client = Labric(
-            api_key="YOUR_API_KEY",
-        )
-        client.tools.create_segmentation_dataset(
-            label_id="label_id",
-        )
-        """
-        _response = self._raw_client.create_segmentation_dataset(
-            label_id=label_id, name=name, description=description, request_options=request_options
-        )
-        return _response.data
 
     def write(
         self,
@@ -689,67 +635,6 @@ class AsyncToolsClient:
         AsyncRawToolsClient
         """
         return self._raw_client
-
-    async def create_segmentation_dataset(
-        self,
-        *,
-        label_id: str,
-        name: typing.Optional[str] = OMIT,
-        description: typing.Optional[str] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> DatasetSchema:
-        """
-        Create an (image, mask) training dataset from an annotation label's
-        human-vetted masks.
-
-        label_id is the id of an image annotation label (the
-        core_imageannotationlabel table); the dataset contains one row per
-        human-vetted annotation with that label, with columns 'image' (the image
-        file id) and 'mask' (the mask blob path). Pass the returned dataset id to
-        the train-ml-model tool with task_type 'segmentation', target_column
-        'mask', and image_columns ['image'].
-
-        Requires an API key with the `write` scope.
-
-        Parameters
-        ----------
-        label_id : str
-
-        name : typing.Optional[str]
-
-        description : typing.Optional[str]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        DatasetSchema
-            OK
-
-        Examples
-        --------
-        import asyncio
-
-        from labric import AsyncLabric
-
-        client = AsyncLabric(
-            api_key="YOUR_API_KEY",
-        )
-
-
-        async def main() -> None:
-            await client.tools.create_segmentation_dataset(
-                label_id="label_id",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._raw_client.create_segmentation_dataset(
-            label_id=label_id, name=name, description=description, request_options=request_options
-        )
-        return _response.data
 
     async def write(
         self,

@@ -15,7 +15,6 @@ if typing.TYPE_CHECKING:
     from .batch_write_options_mode import BatchWriteOptionsMode
     from .batch_write_response import BatchWriteResponse
     from .column_info_schema import ColumnInfoSchema
-    from .dataset_schema import DatasetSchema
     from .error_schema import ErrorSchema
     from .labric_upload_file_schema import LabricUploadFileSchema
     from .ml_model_task_type import MlModelTaskType
@@ -44,7 +43,6 @@ _dynamic_imports: typing.Dict[str, str] = {
     "BatchWriteOptionsMode": ".batch_write_options_mode",
     "BatchWriteResponse": ".batch_write_response",
     "ColumnInfoSchema": ".column_info_schema",
-    "DatasetSchema": ".dataset_schema",
     "ErrorSchema": ".error_schema",
     "LabricUploadFileSchema": ".labric_upload_file_schema",
     "MlModelTaskType": ".ml_model_task_type",
@@ -97,7 +95,6 @@ __all__ = [
     "BatchWriteOptionsMode",
     "BatchWriteResponse",
     "ColumnInfoSchema",
-    "DatasetSchema",
     "ErrorSchema",
     "LabricUploadFileSchema",
     "MlModelTaskType",
