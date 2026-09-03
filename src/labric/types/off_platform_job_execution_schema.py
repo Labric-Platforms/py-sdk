@@ -7,7 +7,7 @@ import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 
 
-class ToolsJobExecutionSchema(UniversalBaseModel):
+class OffPlatformJobExecutionSchema(UniversalBaseModel):
     """
     A job execution to attribute off-platform writes and uploads to.
     """

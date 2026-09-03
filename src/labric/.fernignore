@@ -1,5 +1,6 @@
 client.py
 data_type_validators.py
+legacy_tools.py
 read_wrappers.py
 step_recording.py
 write_wrappers.py

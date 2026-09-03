@@ -6,14 +6,8 @@ import typing
 from importlib import import_module
 
 if typing.TYPE_CHECKING:
-    from .labric_read_schema_mode import LabricReadSchemaMode
-    from .labric_read_schema_target_type import LabricReadSchemaTargetType
-    from .labric_write_schema_target_type import LabricWriteSchemaTargetType
-_dynamic_imports: typing.Dict[str, str] = {
-    "LabricReadSchemaMode": ".labric_read_schema_mode",
-    "LabricReadSchemaTargetType": ".labric_read_schema_target_type",
-    "LabricWriteSchemaTargetType": ".labric_write_schema_target_type",
-}
+    from .types import UpdateJobExecutionStatusSchemaStatus
+_dynamic_imports: typing.Dict[str, str] = {"UpdateJobExecutionStatusSchemaStatus": ".types"}
 
 
 def __getattr__(attr_name: str) -> typing.Any:
@@ -37,4 +31,4 @@ def __dir__():
     return sorted(lazy_attrs)
 
 
-__all__ = ["LabricReadSchemaMode", "LabricReadSchemaTargetType", "LabricWriteSchemaTargetType"]
+__all__ = ["UpdateJobExecutionStatusSchemaStatus"]

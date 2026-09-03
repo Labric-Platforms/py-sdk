@@ -13,6 +13,7 @@ from .environment import LabricEnvironment
 
 if typing.TYPE_CHECKING:
     from .agent.client import AgentClient, AsyncAgentClient
+    from .jobs.client import AsyncJobsClient, JobsClient
     from .models.client import AsyncModelsClient, ModelsClient
     from .tools.client import AsyncToolsClient, ToolsClient
 
@@ -106,6 +107,7 @@ class BaseLabric:
             logging=logging,
         )
         self._agent: typing.Optional[AgentClient] = None
+        self._jobs: typing.Optional[JobsClient] = None
         self._tools: typing.Optional[ToolsClient] = None
         self._models: typing.Optional[ModelsClient] = None
 
@@ -116,6 +118,14 @@ class BaseLabric:
 
             self._agent = AgentClient(client_wrapper=self._client_wrapper)
         return self._agent
+
+    @property
+    def jobs(self):
+        if self._jobs is None:
+            from .jobs.client import JobsClient  # noqa: E402
+
+            self._jobs = JobsClient(client_wrapper=self._client_wrapper)
+        return self._jobs
 
     @property
     def tools(self):
@@ -244,6 +254,7 @@ class AsyncBaseLabric:
             logging=logging,
         )
         self._agent: typing.Optional[AsyncAgentClient] = None
+        self._jobs: typing.Optional[AsyncJobsClient] = None
         self._tools: typing.Optional[AsyncToolsClient] = None
         self._models: typing.Optional[AsyncModelsClient] = None
 
@@ -254,6 +265,14 @@ class AsyncBaseLabric:
 
             self._agent = AsyncAgentClient(client_wrapper=self._client_wrapper)
         return self._agent
+
+    @property
+    def jobs(self):
+        if self._jobs is None:
+            from .jobs.client import AsyncJobsClient  # noqa: E402
+
+            self._jobs = AsyncJobsClient(client_wrapper=self._client_wrapper)
+        return self._jobs
 
     @property
     def tools(self):
