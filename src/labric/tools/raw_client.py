@@ -364,7 +364,9 @@ class RawToolsClient:
 
         Runs the query against the organization's read replica, so it cannot
         mutate data. Only SELECT statements are accepted. Supports positional
-        parameters via a params list. Use the schema tool to discover tables
+        parameters: write %s placeholders in the query and pass the values in
+        order in the params list. Named :param placeholders belong to saved
+        dataset queries and are not accepted here. Use the schema tool to discover tables
         first, and reference each column by its sql_column_name — foreign keys
         carry an _id suffix in SQL (e.g. a 'sample' reference is the 'sample_id'
         column).
@@ -1082,7 +1084,9 @@ class AsyncRawToolsClient:
 
         Runs the query against the organization's read replica, so it cannot
         mutate data. Only SELECT statements are accepted. Supports positional
-        parameters via a params list. Use the schema tool to discover tables
+        parameters: write %s placeholders in the query and pass the values in
+        order in the params list. Named :param placeholders belong to saved
+        dataset queries and are not accepted here. Use the schema tool to discover tables
         first, and reference each column by its sql_column_name — foreign keys
         carry an _id suffix in SQL (e.g. a 'sample' reference is the 'sample_id'
         column).
