@@ -6,7 +6,7 @@ import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 
 
-class LabricUploadFileSchema(UniversalBaseModel):
+class FileUploadSchema(UniversalBaseModel):
     file_id: str = pydantic.Field()
     """
     The ID of the uploaded file.

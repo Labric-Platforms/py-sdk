@@ -16,7 +16,9 @@ if typing.TYPE_CHECKING:
     from .batch_write_response import BatchWriteResponse
     from .column_info_schema import ColumnInfoSchema
     from .error_schema import ErrorSchema
-    from .labric_upload_file_schema import LabricUploadFileSchema
+    from .file_content_schema import FileContentSchema
+    from .file_info_schema import FileInfoSchema
+    from .file_upload_schema import FileUploadSchema
     from .ml_model_task_type import MlModelTaskType
     from .ml_problem_type import MlProblemType
     from .off_platform_job_execution_schema import OffPlatformJobExecutionSchema
@@ -28,8 +30,6 @@ if typing.TYPE_CHECKING:
     from .start_job_execution_schema import StartJobExecutionSchema
     from .table_schema_info_schema import TableSchemaInfoSchema
     from .table_summary import TableSummary
-    from .tools_file_content_schema import ToolsFileContentSchema
-    from .tools_file_info_schema import ToolsFileInfoSchema
     from .tools_ml_model_detail_schema import ToolsMlModelDetailSchema
     from .validation_error_schema import ValidationErrorSchema
     from .write_plan import WritePlan
@@ -44,7 +44,9 @@ _dynamic_imports: typing.Dict[str, str] = {
     "BatchWriteResponse": ".batch_write_response",
     "ColumnInfoSchema": ".column_info_schema",
     "ErrorSchema": ".error_schema",
-    "LabricUploadFileSchema": ".labric_upload_file_schema",
+    "FileContentSchema": ".file_content_schema",
+    "FileInfoSchema": ".file_info_schema",
+    "FileUploadSchema": ".file_upload_schema",
     "MlModelTaskType": ".ml_model_task_type",
     "MlProblemType": ".ml_problem_type",
     "OffPlatformJobExecutionSchema": ".off_platform_job_execution_schema",
@@ -56,8 +58,6 @@ _dynamic_imports: typing.Dict[str, str] = {
     "StartJobExecutionSchema": ".start_job_execution_schema",
     "TableSchemaInfoSchema": ".table_schema_info_schema",
     "TableSummary": ".table_summary",
-    "ToolsFileContentSchema": ".tools_file_content_schema",
-    "ToolsFileInfoSchema": ".tools_file_info_schema",
     "ToolsMlModelDetailSchema": ".tools_ml_model_detail_schema",
     "ValidationErrorSchema": ".validation_error_schema",
     "WritePlan": ".write_plan",
@@ -96,7 +96,9 @@ __all__ = [
     "BatchWriteResponse",
     "ColumnInfoSchema",
     "ErrorSchema",
-    "LabricUploadFileSchema",
+    "FileContentSchema",
+    "FileInfoSchema",
+    "FileUploadSchema",
     "MlModelTaskType",
     "MlProblemType",
     "OffPlatformJobExecutionSchema",
@@ -108,8 +110,6 @@ __all__ = [
     "StartJobExecutionSchema",
     "TableSchemaInfoSchema",
     "TableSummary",
-    "ToolsFileContentSchema",
-    "ToolsFileInfoSchema",
     "ToolsMlModelDetailSchema",
     "ValidationErrorSchema",
     "WritePlan",

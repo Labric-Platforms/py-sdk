@@ -1,4 +1,285 @@
 # Reference
+## files
+<details><summary><code>client.files.<a href="src/labric/files/client.py">list</a>(...) -> typing.List[FileInfoSchema]</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List source data files available for parser development.
+
+Returns a representative set of uploaded files for the org, newest first.
+Filter by instrument_id, comma-separated file extensions (e.g. "csv,txt"),
+or a substring of the file name. Use the file-content tool to inspect a
+file's raw contents.
+
+Requires an API key with the `read` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.files.list()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**instrument_id:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**extensions:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**query:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `typing.Optional[int]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.files.<a href="src/labric/files/client.py">upload</a>(...) -> FileUploadSchema</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Upload a file.
+
+Accepts a multipart/form-data file upload, stores it in GCS, and returns the
+created file record. At least one of job_execution_id and instrument_id is
+required: pass a job_execution_id for an artifact of a job running in a
+sandbox, which also records provenance linking the file to that execution,
+and pass an instrument_id for data captured off-platform by an instrument the
+Sync app cannot reach, which attaches the file to that instrument so
+instrument triggers and parsers pick it up.
+
+Requires an API key with the `write` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.files.upload(
+    file="example_file",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**file:** `core.File` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**job_execution_id:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**instrument_id:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.files.<a href="src/labric/files/client.py">get_content</a>(...) -> FileContentSchema</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Fetch a source file's content for inspecting raw instrument output.
+
+Returns a presigned download URL plus a best-effort UTF-8 text preview of
+the start of the file. Large files return a URL only (no inline preview);
+fetch the full bytes via the URL when needed.
+
+Requires an API key with the `read` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.files.get_content(
+    file_id="file_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**file_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## agent
 <details><summary><code>client.agent.<a href="src/labric/agent/client.py">run_stream</a>(...) -> typing.Iterator[bytes]</code></summary>
 <dl>
@@ -845,105 +1126,6 @@ client.tools.execute_sql(
 </dl>
 </details>
 
-<details><summary><code>client.tools.<a href="src/labric/tools/client.py">upload_file</a>(...) -> LabricUploadFileSchema</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Upload a file.
-
-Accepts a multipart/form-data file upload, stores it in GCS, and returns the
-created file record. At least one of job_execution_id and instrument_id is
-required: pass a job_execution_id for an artifact of a job running in a
-sandbox, which also records provenance linking the file to that execution,
-and pass an instrument_id for data captured off-platform by an instrument the
-Sync app cannot reach, which attaches the file to that instrument so
-instrument triggers and parsers pick it up.
-
-Requires an API key with the `write` scope.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from labric import Labric
-from labric.environment import LabricEnvironment
-
-client = Labric(
-    api_key="<token>",
-    environment=LabricEnvironment.DEFAULT,
-)
-
-client.tools.upload_file(
-    file="example_file",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**file:** `core.File` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**job_execution_id:** `typing.Optional[str]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**instrument_id:** `typing.Optional[str]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
 <details><summary><code>client.tools.<a href="src/labric/tools/client.py">get_schema</a>() -> typing.List[TableSchemaInfoSchema]</code></summary>
 <dl>
 <dd>
@@ -1001,187 +1183,6 @@ client.tools.get_schema()
 
 <dl>
 <dd>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.tools.<a href="src/labric/tools/client.py">list_files</a>(...) -> typing.List[ToolsFileInfoSchema]</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-List source data files available for parser development.
-
-Returns a representative set of uploaded files for the org, newest first.
-Filter by instrument_id, comma-separated file extensions (e.g. "csv,txt"),
-or a substring of the file name. Use the file-content tool to inspect a
-file's raw contents.
-
-Requires an API key with the `read` scope.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from labric import Labric
-from labric.environment import LabricEnvironment
-
-client = Labric(
-    api_key="<token>",
-    environment=LabricEnvironment.DEFAULT,
-)
-
-client.tools.list_files()
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**instrument_id:** `typing.Optional[str]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**extensions:** `typing.Optional[str]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**query:** `typing.Optional[str]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**limit:** `typing.Optional[int]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.tools.<a href="src/labric/tools/client.py">get_file_content</a>(...) -> ToolsFileContentSchema</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Fetch a source file's content for inspecting raw instrument output.
-
-Returns a presigned download URL plus a best-effort UTF-8 text preview of
-the start of the file. Large files return a URL only (no inline preview);
-fetch the full bytes via the URL when needed.
-
-Requires an API key with the `read` scope.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from labric import Labric
-from labric.environment import LabricEnvironment
-
-client = Labric(
-    api_key="<token>",
-    environment=LabricEnvironment.DEFAULT,
-)
-
-client.tools.get_file_content(
-    file_id="file_id",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**file_id:** `str` 
-    
-</dd>
-</dl>
 
 <dl>
 <dd>

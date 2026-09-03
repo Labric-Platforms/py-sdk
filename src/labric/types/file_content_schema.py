@@ -6,7 +6,7 @@ import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 
 
-class ToolsFileContentSchema(UniversalBaseModel):
+class FileContentSchema(UniversalBaseModel):
     """
     The content of a source data file, for inspecting raw instrument output.
     """
