@@ -4,15 +4,23 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .column_info_schema import ColumnInfoSchema
 
 
-class TableSchemaInfoSchema(UniversalBaseModel):
-    id: int
+class QueryableColumnSchema(UniversalBaseModel):
+    """
+    A column of a queryable table. Platform table columns have no id.
+    """
+
+    id: typing.Optional[int] = None
     name: str
+    sql_column_name: str
     description: typing.Optional[str] = None
-    semantic_category: typing.Optional[str] = None
-    columns: typing.List[ColumnInfoSchema]
+    data_type: str
+    is_primary_key: bool
+    is_foreign_key: bool
+    is_nullable: bool
+    is_unique: bool
+    foreign_key_table_name: typing.Optional[str] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

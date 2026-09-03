@@ -1128,7 +1128,7 @@ client.tools.execute_sql(
 </dl>
 </details>
 
-<details><summary><code>client.tools.<a href="src/labric/tools/client.py">get_schema</a>() -> typing.List[TableSchemaInfoSchema]</code></summary>
+<details><summary><code>client.tools.<a href="src/labric/tools/client.py">get_schema</a>() -> typing.List[QueryableTableSchema]</code></summary>
 <dl>
 <dd>
 
@@ -1147,8 +1147,10 @@ Returns every table the agent can target, including its semantic category
 nullability, uniqueness, and foreign-key targets. Each column carries two
 names: 'name' is what the read and write tools accept, and 'sql_column_name'
 is the physical column for SQL queries (foreign keys carry an _id suffix).
-This is the map a parser writes into: use it to plan which tables to
-populate and how rows link.
+The org's own tables are followed by the platform tables (core_experiment,
+core_instrument, and similar) that SQL queries can join against; those have
+no id or semantic category. This is the map a parser writes into: use it to
+plan which tables to populate and how rows link.
 
 Requires an API key with the `read` scope.
 </dd>

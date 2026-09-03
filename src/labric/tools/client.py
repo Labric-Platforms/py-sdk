@@ -7,7 +7,7 @@ from ..core.request_options import RequestOptions
 from ..types.batch_write_options import BatchWriteOptions
 from ..types.batch_write_response import BatchWriteResponse
 from ..types.query_result import QueryResult
-from ..types.table_schema_info_schema import TableSchemaInfoSchema
+from ..types.queryable_table_schema import QueryableTableSchema
 from .raw_client import AsyncRawToolsClient, RawToolsClient
 from .types.labric_read_schema_mode import LabricReadSchemaMode
 from .types.labric_read_schema_target_type import LabricReadSchemaTargetType
@@ -243,7 +243,7 @@ class ToolsClient:
 
     def get_schema(
         self, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[TableSchemaInfoSchema]:
+    ) -> typing.List[QueryableTableSchema]:
         """
         Describe the organization's data schema.
 
@@ -252,8 +252,10 @@ class ToolsClient:
         nullability, uniqueness, and foreign-key targets. Each column carries two
         names: 'name' is what the read and write tools accept, and 'sql_column_name'
         is the physical column for SQL queries (foreign keys carry an _id suffix).
-        This is the map a parser writes into: use it to plan which tables to
-        populate and how rows link.
+        The org's own tables are followed by the platform tables (core_experiment,
+        core_instrument, and similar) that SQL queries can join against; those have
+        no id or semantic category. This is the map a parser writes into: use it to
+        plan which tables to populate and how rows link.
 
         Requires an API key with the `read` scope.
 
@@ -264,7 +266,7 @@ class ToolsClient:
 
         Returns
         -------
-        typing.List[TableSchemaInfoSchema]
+        typing.List[QueryableTableSchema]
             OK
 
         Examples
@@ -583,7 +585,7 @@ class AsyncToolsClient:
 
     async def get_schema(
         self, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[TableSchemaInfoSchema]:
+    ) -> typing.List[QueryableTableSchema]:
         """
         Describe the organization's data schema.
 
@@ -592,8 +594,10 @@ class AsyncToolsClient:
         nullability, uniqueness, and foreign-key targets. Each column carries two
         names: 'name' is what the read and write tools accept, and 'sql_column_name'
         is the physical column for SQL queries (foreign keys carry an _id suffix).
-        This is the map a parser writes into: use it to plan which tables to
-        populate and how rows link.
+        The org's own tables are followed by the platform tables (core_experiment,
+        core_instrument, and similar) that SQL queries can join against; those have
+        no id or semantic category. This is the map a parser writes into: use it to
+        plan which tables to populate and how rows link.
 
         Requires an API key with the `read` scope.
 
@@ -604,7 +608,7 @@ class AsyncToolsClient:
 
         Returns
         -------
-        typing.List[TableSchemaInfoSchema]
+        typing.List[QueryableTableSchema]
             OK
 
         Examples

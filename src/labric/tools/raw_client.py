@@ -21,7 +21,7 @@ from ..types.batch_write_options import BatchWriteOptions
 from ..types.batch_write_response import BatchWriteResponse
 from ..types.error_schema import ErrorSchema
 from ..types.query_result import QueryResult
-from ..types.table_schema_info_schema import TableSchemaInfoSchema
+from ..types.queryable_table_schema import QueryableTableSchema
 from ..types.validation_error_schema import ValidationErrorSchema
 from .types.labric_read_schema_mode import LabricReadSchemaMode
 from .types.labric_read_schema_target_type import LabricReadSchemaTargetType
@@ -498,7 +498,7 @@ class RawToolsClient:
 
     def get_schema(
         self, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> HttpResponse[typing.List[TableSchemaInfoSchema]]:
+    ) -> HttpResponse[typing.List[QueryableTableSchema]]:
         """
         Describe the organization's data schema.
 
@@ -507,8 +507,10 @@ class RawToolsClient:
         nullability, uniqueness, and foreign-key targets. Each column carries two
         names: 'name' is what the read and write tools accept, and 'sql_column_name'
         is the physical column for SQL queries (foreign keys carry an _id suffix).
-        This is the map a parser writes into: use it to plan which tables to
-        populate and how rows link.
+        The org's own tables are followed by the platform tables (core_experiment,
+        core_instrument, and similar) that SQL queries can join against; those have
+        no id or semantic category. This is the map a parser writes into: use it to
+        plan which tables to populate and how rows link.
 
         Requires an API key with the `read` scope.
 
@@ -519,7 +521,7 @@ class RawToolsClient:
 
         Returns
         -------
-        HttpResponse[typing.List[TableSchemaInfoSchema]]
+        HttpResponse[typing.List[QueryableTableSchema]]
             OK
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -530,9 +532,9 @@ class RawToolsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    typing.List[TableSchemaInfoSchema],
+                    typing.List[QueryableTableSchema],
                     parse_obj_as(
-                        type_=typing.List[TableSchemaInfoSchema],  # type: ignore
+                        type_=typing.List[QueryableTableSchema],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -1218,7 +1220,7 @@ class AsyncRawToolsClient:
 
     async def get_schema(
         self, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AsyncHttpResponse[typing.List[TableSchemaInfoSchema]]:
+    ) -> AsyncHttpResponse[typing.List[QueryableTableSchema]]:
         """
         Describe the organization's data schema.
 
@@ -1227,8 +1229,10 @@ class AsyncRawToolsClient:
         nullability, uniqueness, and foreign-key targets. Each column carries two
         names: 'name' is what the read and write tools accept, and 'sql_column_name'
         is the physical column for SQL queries (foreign keys carry an _id suffix).
-        This is the map a parser writes into: use it to plan which tables to
-        populate and how rows link.
+        The org's own tables are followed by the platform tables (core_experiment,
+        core_instrument, and similar) that SQL queries can join against; those have
+        no id or semantic category. This is the map a parser writes into: use it to
+        plan which tables to populate and how rows link.
 
         Requires an API key with the `read` scope.
 
@@ -1239,7 +1243,7 @@ class AsyncRawToolsClient:
 
         Returns
         -------
-        AsyncHttpResponse[typing.List[TableSchemaInfoSchema]]
+        AsyncHttpResponse[typing.List[QueryableTableSchema]]
             OK
         """
         _response = await self._client_wrapper.httpx_client.request(
@@ -1250,9 +1254,9 @@ class AsyncRawToolsClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    typing.List[TableSchemaInfoSchema],
+                    typing.List[QueryableTableSchema],
                     parse_obj_as(
-                        type_=typing.List[TableSchemaInfoSchema],  # type: ignore
+                        type_=typing.List[QueryableTableSchema],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
