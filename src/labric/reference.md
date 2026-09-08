@@ -1303,6 +1303,106 @@ client.tools.batch_write(
 </dl>
 </details>
 
+## images
+<details><summary><code>client.images.<a href="src/labric/images/client.py">annotate</a>(...) -> typing.List[AnnotationSchema]</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Save masks on an image as annotations, one per entry.
+
+Each entry is a binary mask PNG (white-on-transparent, base64-encoded)
+for a label; labels are created on first use. Saving is additive, so
+a label can accumulate several masks on the same image. The annotations
+a segmentation model returns from predict can be passed straight through;
+each names the file it was predicted for, and one for a different file
+rejects the request. Leave is_human_vetted false for automated saves:
+the mask editor flags unvetted masks for review, and only vetted masks
+feed training. The file must be a processed image. All-or-nothing: one
+bad entry rejects the whole request.
+
+Requires an API key with the `write` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric, SaveAnnotationSchema
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.images.annotate(
+    file_id="file_id",
+    annotations=[
+        SaveAnnotationSchema(
+            mask="mask",
+            label="label",
+        )
+    ],
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**file_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**annotations:** `typing.List[SaveAnnotationSchema]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## models
 <details><summary><code>client.models.<a href="src/labric/models/client.py">predict</a>(...) -> PredictResponseSchema</code></summary>
 <dl>

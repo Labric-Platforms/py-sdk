@@ -6,21 +6,18 @@ import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 
 
-class PredictedAnnotationSchema(UniversalBaseModel):
+class SaveAnnotationSchema(UniversalBaseModel):
     """
-    A predicted mask shaped as an annotation payload, tied back to the
-    input row's image file. Nothing is persisted by predict: to store it,
-    pass it to POST /v1/images/{file_id}/annotations (the images annotate
-    tool), with is_human_vetted=true when a human reviewed the prediction
-    and omitted (false) for automated saves.
+    A new mask for a label on an image: the update payload plus the
+    identity fields an existing row already has.
     """
 
-    file_id: str
-    label: str
     mask: str
-    width: int
-    height: int
-    foreground_fraction: float
+    width: typing.Optional[int] = None
+    height: typing.Optional[int] = None
+    label: str
+    is_human_vetted: typing.Optional[bool] = None
+    file_id: typing.Optional[str] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
