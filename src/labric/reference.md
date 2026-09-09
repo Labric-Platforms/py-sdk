@@ -1403,6 +1403,119 @@ client.images.annotate(
 </dl>
 </details>
 
+## notifications
+<details><summary><code>client.notifications.<a href="src/labric/notifications/client.py">send</a>(...) -> SentNotificationSchema</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Send a message to your own inbox, and to your email if you have enabled
+email for the Message category in your notification preferences. Sends are
+capped per hour and per organization per day; a 429 response carries a
+Retry-After header. Messages sent with an API key are attributed to it, so
+the recipient can tell where they came from.
+
+Requires an API key with the `write` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.notifications.send(
+    title="title",
+    dedupe_key="dedupe_key",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**title:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**dedupe_key:** `str` — Idempotency key; a repeat send with the same key is dropped
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**body:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**action_url:** `typing.Optional[str]` — Platform path the notification opens, such as /jobs/<id>
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**data:** `typing.Optional[typing.Dict[str, typing.Any]]` — Structured context stored with the notification. The keys sender and api_key_id are reserved for sender attribution.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## models
 <details><summary><code>client.models.<a href="src/labric/models/client.py">predict</a>(...) -> PredictResponseSchema</code></summary>
 <dl>
