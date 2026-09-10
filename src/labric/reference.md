@@ -784,6 +784,10 @@ inserts, upserts with match columns, default value functions (DATETIME_NOW,
 UUID4), and optional dry-run validation. A job execution is created
 automatically if one is not provided.
 
+Core tables are writable only if they appear in the write allowlist. Tables
+that describe the organization itself, such as organizationmember, are
+read-only and can only be reached through the read tool.
+
 Requires an API key with the `write` scope.
 </dd>
 </dl>
@@ -840,7 +844,7 @@ client.tools.write(
 <dl>
 <dd>
 
-**target_type:** `LabricWriteSchemaTargetType` — The type of target. Currently 'table' or 'core-table'.
+**target_type:** `LabricWriteSchemaTargetType` — The type of target. Currently 'table' or 'core-table'. Only some core tables are writable. Tables describing the organization, such as organizationmember, are read-only.
     
 </dd>
 </dl>
@@ -1008,7 +1012,7 @@ client.tools.read(
 <dl>
 <dd>
 
-**filters:** `typing.Optional[typing.Dict[str, typing.Any]]` — Key-value filters to apply to the query. Omit to match all records.
+**filters:** `typing.Optional[typing.Dict[str, typing.Any]]` — Key-value filters to apply to the query. Omit to match all records. A key may follow a foreign key onto another readable table, as in instrument_type__name; tables the read tool does not return are not traversable.
     
 </dd>
 </dl>
