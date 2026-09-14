@@ -1092,6 +1092,14 @@ client.tools.write(
 <dl>
 <dd>
 
+**on_match:** `typing.Optional[LabricWriteSchemaOnMatch]` — How a matched record takes the provided columns in create-or-update mode. 'fill_missing' only sets columns that are currently null. 'overwrite' replaces them, and a provided null clears the column. Columns absent from the record and default functions never overwrite an existing value.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **defaults:** `typing.Optional[typing.Dict[str, typing.Optional[str]]]` — Map of field names to default function names (e.g. 'DATETIME_NOW', 'UUID4').
     
 </dd>
