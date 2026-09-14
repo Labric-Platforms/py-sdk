@@ -510,6 +510,214 @@ client.agent.run_stream(
 </details>
 
 ## jobs
+<details><summary><code>client.jobs.<a href="src/labric/jobs/client.py">create</a>(...) -> ToolsJobSchema</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Create a job that runs a Python script on the platform.
+
+The code becomes the job's script; declare its dependencies inline in a
+PEP 723 `# /// script` block. The job then appears on the platform, where
+it can be run and its executions reviewed. To change an existing job's
+name, description, or code, use update_job instead.
+
+Requires an API key with the `write` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.jobs.create(
+    name="name",
+    code="code",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**name:** `str` — Name of the job. Unique within the organization.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**code:** `str` — Python source of the script the job runs. Declare dependencies inline in a PEP 723 `# /// script` block.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` — What the job does.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.jobs.<a href="src/labric/jobs/client.py">update</a>(...) -> ToolsJobSchema</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Change a job's name, description, or code, or archive it.
+
+Only the fields passed are changed. New code is stored as a new version of
+the job's script, so earlier executions keep the version they ran. To
+create a job, use create_job instead.
+
+Requires an API key with the `write` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.jobs.update(
+    job_id="job_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**job_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `typing.Optional[str]` — New name for the job.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` — New description for the job. Pass an empty string to clear it.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**code:** `typing.Optional[str]` — New Python source for the job's script, stored as a new script version. Declare dependencies inline in a PEP 723 `# /// script` block.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**archived:** `typing.Optional[bool]` — True archives the job, hiding it from the active job list; false restores it.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.jobs.<a href="src/labric/jobs/client.py">start</a>(...) -> OffPlatformJobExecutionSchema</code></summary>
 <dl>
 <dd>
