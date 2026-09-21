@@ -114,15 +114,20 @@ client.files.list()
 <dl>
 <dd>
 
-Upload a file.
+Upload a file in one multipart/form-data request.
 
-Accepts a multipart/form-data file upload, stores it in GCS, and returns the
-created file record. At least one of job_execution_id and instrument_id is
-required: pass a job_execution_id for an artifact of a job running in a
-sandbox, which also records provenance linking the file to that execution,
-and pass an instrument_id for data captured off-platform by an instrument the
-Sync app cannot reach, which attaches the file to that instrument so
-instrument triggers and parsers pick it up.
+Request bodies over 4.5 MB are rejected at the platform edge before they
+reach this route. For larger files, create an upload URL and PUT the bytes
+to it instead; the SDK's files.upload() does that for files of any size.
+The [Upload files](https://docs.labric.co/upload-files) guide walks
+through both flows.
+
+At least one of job_execution_id and instrument_id is required: pass a
+job_execution_id for an artifact of a job running in a sandbox, which also
+records provenance linking the file to that execution, and pass an
+instrument_id for data captured off-platform by an instrument the Sync app
+cannot reach, which attaches the file to that instrument so instrument
+triggers and parsers pick it up.
 
 Requires an API key with the `write` scope.
 </dd>
@@ -182,6 +187,205 @@ client.files.upload(
 <dd>
 
 **instrument_id:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.files.<a href="src/labric/files/client.py">create_upload_url</a>(...) -> FileUploadUrlSchema</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Start an upload that sends the file bytes straight to storage.
+
+Creates the file record and returns a signed URL that accepts the bytes as
+the body of an HTTP PUT for the next 15 minutes. Send exactly the returned
+headers on the PUT and no Authorization header, then confirm the upload to
+make the file visible. The URL only creates the object, never replaces one,
+and refuses bodies over 500 MB. Asking again for an instrument path whose
+upload was never confirmed returns a fresh URL for the same file, so a
+failed PUT can be retried. The SDK's files.upload() runs all three steps;
+the [Upload files](https://docs.labric.co/upload-files) guide shows them
+with curl.
+
+At least one of job_execution_id and instrument_id is required: pass a
+job_execution_id for an artifact of a job running in a sandbox, which also
+records provenance linking the file to that execution, and pass an
+instrument_id for data captured off-platform by an instrument the Sync app
+cannot reach, which attaches the file to that instrument so instrument
+triggers and parsers pick it up.
+
+Requires an API key with the `write` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.files.create_upload_url(
+    file_name="file_name",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**file_name:** `str` — The file name to record, e.g. results.csv.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**content_type:** `typing.Optional[str]` — MIME type of the file. Defaults to application/octet-stream, which is also substituted for types a browser could render as a page.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**job_execution_id:** `typing.Optional[str]` — The job execution producing the file, for a job artifact.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**instrument_id:** `typing.Optional[str]` — The instrument that captured the file, for off-platform data.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.files.<a href="src/labric/files/client.py">confirm_upload</a>(...) -> FileUploadSchema</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Finish an upload after the PUT to its upload URL has succeeded.
+
+Records the stored file's size and checksum, makes the file visible in
+listings, and notifies triggers and parsers. Files over 500 MB and native
+executables are discarded with a 400, as the one-request upload rejects
+them. Confirming a file that is already confirmed returns its record again
+without notifying anyone twice. The
+[Upload files](https://docs.labric.co/upload-files) guide shows the full
+sequence.
+
+Requires an API key with the `write` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.files.confirm_upload(
+    file_id="file_id",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**file_id:** `str` 
     
 </dd>
 </dl>
