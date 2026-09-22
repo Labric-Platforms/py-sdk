@@ -714,6 +714,91 @@ client.agent.run_stream(
 </details>
 
 ## jobs
+<details><summary><code>client.jobs.<a href="src/labric/jobs/client.py">list</a>(...) -> typing.List[ToolsJobSchema]</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List the organization's jobs, newest first.
+
+Pass name to look up one job, since job names are unique within an
+organization; the list is then empty or holds that job. Archived jobs
+are left out unless archived is true.
+
+Requires an API key with the `read` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.jobs.list()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**name:** `typing.Optional[str]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**archived:** `typing.Optional[bool]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.jobs.<a href="src/labric/jobs/client.py">create</a>(...) -> ToolsJobSchema</code></summary>
 <dl>
 <dd>
