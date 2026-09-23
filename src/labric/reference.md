@@ -884,6 +884,46 @@ client.jobs.create(
 <dl>
 <dd>
 
+**trigger_enabled:** `typing.Optional[bool]` — True runs the job automatically when its trigger fires.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**trigger_category:** `typing.Optional[JobTriggerCategory]` — What runs the job automatically: file_uploaded runs it on each uploaded file that matches the conditions; job_completed runs it on the output files of another job's executions. Required when trigger_enabled is true.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**trigger_instrument_id:** `typing.Optional[str]` — Restricts a file_uploaded trigger to files from this instrument.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**trigger_conditions:** `typing.Optional[typing.Dict[str, typing.Any]]` — Filters on the triggering event. For file_uploaded, any of file_name_pattern (glob or regex), file_extensions (list of strings starting with '.'), source_type, min_size_kb, and max_size_kb. For job_completed, source_job_id (required) and statuses (list drawn from completed and failed; defaults to completed).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**parameter_definitions:** `typing.Optional[typing.List[ParameterDefinitionSchema]]` — Inputs the script reads at run time. Each is rendered as a form control when the job is run on the platform.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -908,7 +948,8 @@ client.jobs.create(
 <dl>
 <dd>
 
-Change a job's name, description, or code, or archive it.
+Change a job's name, description, code, trigger, or parameters, or
+archive it.
 
 Only the fields passed are changed. New code is stored as a new version of
 the job's script, so earlier executions keep the version they ran. To
@@ -988,6 +1029,46 @@ client.jobs.update(
 <dd>
 
 **archived:** `typing.Optional[bool]` — True archives the job, hiding it from the active job list; false restores it.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**trigger_enabled:** `typing.Optional[bool]` — True creates or replaces the job's trigger from the trigger fields; false removes it.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**trigger_category:** `typing.Optional[JobTriggerCategory]` — What runs the job automatically: file_uploaded runs it on each uploaded file that matches the conditions; job_completed runs it on the output files of another job's executions. Required when trigger_enabled is true.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**trigger_instrument_id:** `typing.Optional[str]` — Restricts a file_uploaded trigger to files from this instrument.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**trigger_conditions:** `typing.Optional[typing.Dict[str, typing.Any]]` — Filters on the triggering event. For file_uploaded, any of file_name_pattern (glob or regex), file_extensions (list of strings starting with '.'), source_type, min_size_kb, and max_size_kb. For job_completed, source_job_id (required) and statuses (list drawn from completed and failed; defaults to completed).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**parameter_definitions:** `typing.Optional[typing.List[ParameterDefinitionSchema]]` — Inputs the script reads at run time. Each is rendered as a form control when the job is run on the platform.
     
 </dd>
 </dl>
