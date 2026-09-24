@@ -894,7 +894,7 @@ client.jobs.create(
 <dl>
 <dd>
 
-**trigger_category:** `typing.Optional[JobTriggerCategory]` — What runs the job automatically: file_uploaded runs it on each uploaded file that matches the conditions; job_completed runs it on the output files of another job's executions. Required when trigger_enabled is true.
+**trigger_category:** `typing.Optional[ToolsCreateJobSchemaTriggerCategory]` — What runs the job automatically: file_uploaded runs it on each uploaded file that matches the conditions; job_completed runs it on the output files of another job's executions. Required when trigger_enabled is true.
     
 </dd>
 </dl>
@@ -1046,7 +1046,7 @@ client.jobs.update(
 <dl>
 <dd>
 
-**trigger_category:** `typing.Optional[JobTriggerCategory]` — What runs the job automatically: file_uploaded runs it on each uploaded file that matches the conditions; job_completed runs it on the output files of another job's executions. Required when trigger_enabled is true.
+**trigger_category:** `typing.Optional[ToolsUpdateJobSchemaTriggerCategory]` — What runs the job automatically: file_uploaded runs it on each uploaded file that matches the conditions; job_completed runs it on the output files of another job's executions. Required when trigger_enabled is true.
     
 </dd>
 </dl>
