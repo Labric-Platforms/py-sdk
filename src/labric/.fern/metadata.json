@@ -10,7 +10,7 @@
       "exported_filename": "client.py"
     }
   },
-  "originGitCommit": "c46c4229d8c80ed0509fa323af3ad8f477e0d842",
+  "originGitCommit": "624e58c77df934ac2610d2562a33437fbb69c6f8",
   "originGitCommitIsDirty": false,
   "invokedBy": "ci",
   "ciProvider": "github"
