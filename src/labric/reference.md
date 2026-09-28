@@ -894,7 +894,7 @@ client.jobs.create(
 <dl>
 <dd>
 
-**trigger_category:** `typing.Optional[ToolsCreateJobSchemaTriggerCategory]` — What runs the job automatically: file_uploaded runs it on each uploaded file that matches the conditions; job_completed runs it on the output files of another job's executions. Required when trigger_enabled is true.
+**trigger_category:** `typing.Optional[JobTriggerCategory]` — What runs the job automatically: file_uploaded runs it on each uploaded file that matches the conditions; job_completed runs it on the output files of another job's executions; schedule configures a recurring cron schedule. Required when trigger_enabled is true.
     
 </dd>
 </dl>
@@ -910,7 +910,7 @@ client.jobs.create(
 <dl>
 <dd>
 
-**trigger_conditions:** `typing.Optional[typing.Dict[str, typing.Any]]` — Filters on the triggering event. For file_uploaded, any of file_name_pattern (glob or regex), file_extensions (list of strings starting with '.'), source_type, min_size_kb, and max_size_kb. For job_completed, source_job_id (required) and statuses (list drawn from completed and failed; defaults to completed).
+**trigger_conditions:** `typing.Optional[typing.Dict[str, typing.Any]]` — Filters on the triggering event. For file_uploaded, any of file_name_pattern (glob or regex), file_extensions (list of strings starting with '.'), source_type, min_size_kb, and max_size_kb. For job_completed, source_job_id (required) and statuses (list drawn from completed and failed; defaults to completed). For schedule, cron (required five-field expression: minute, hour, day of month, month, day of week) and timezone (required IANA timezone, e.g. America/Los_Angeles). Cron supports numbers, month and weekday names, *, ranges, lists, and steps.
     
 </dd>
 </dl>
@@ -1046,7 +1046,7 @@ client.jobs.update(
 <dl>
 <dd>
 
-**trigger_category:** `typing.Optional[ToolsUpdateJobSchemaTriggerCategory]` — What runs the job automatically: file_uploaded runs it on each uploaded file that matches the conditions; job_completed runs it on the output files of another job's executions. Required when trigger_enabled is true.
+**trigger_category:** `typing.Optional[JobTriggerCategory]` — What runs the job automatically: file_uploaded runs it on each uploaded file that matches the conditions; job_completed runs it on the output files of another job's executions; schedule configures a recurring cron schedule. Required when trigger_enabled is true.
     
 </dd>
 </dl>
@@ -1062,7 +1062,7 @@ client.jobs.update(
 <dl>
 <dd>
 
-**trigger_conditions:** `typing.Optional[typing.Dict[str, typing.Any]]` — Filters on the triggering event. For file_uploaded, any of file_name_pattern (glob or regex), file_extensions (list of strings starting with '.'), source_type, min_size_kb, and max_size_kb. For job_completed, source_job_id (required) and statuses (list drawn from completed and failed; defaults to completed).
+**trigger_conditions:** `typing.Optional[typing.Dict[str, typing.Any]]` — Filters on the triggering event. For file_uploaded, any of file_name_pattern (glob or regex), file_extensions (list of strings starting with '.'), source_type, min_size_kb, and max_size_kb. For job_completed, source_job_id (required) and statuses (list drawn from completed and failed; defaults to completed). For schedule, cron (required five-field expression: minute, hour, day of month, month, day of week) and timezone (required IANA timezone, e.g. America/Los_Angeles). Cron supports numbers, month and weekday names, *, ranges, lists, and steps.
     
 </dd>
 </dl>
