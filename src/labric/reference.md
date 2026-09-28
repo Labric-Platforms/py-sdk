@@ -910,7 +910,7 @@ client.jobs.create(
 <dl>
 <dd>
 
-**trigger_conditions:** `typing.Optional[typing.Dict[str, typing.Any]]` — Filters on the triggering event. For file_uploaded, any of file_name_pattern (glob or regex), file_extensions (list of strings starting with '.'), source_type, min_size_kb, and max_size_kb. For job_completed, source_job_id (required) and statuses (list drawn from completed and failed; defaults to completed). For schedule, cron (required five-field expression: minute, hour, day of month, month, day of week) and timezone (required IANA timezone, e.g. America/Los_Angeles). Cron supports numbers, month and weekday names, *, ranges, lists, and steps.
+**trigger_conditions:** `typing.Optional[typing.Dict[str, typing.Any]]` — Filters on the triggering event. For file_uploaded, any of file_name_pattern, file_extensions (list of strings starting with '.'; files with no extension always pass), source_type, min_size_kb, and max_size_kb (both inclusive). file_name_pattern is a case-sensitive glob in which * matches any characters, including folder separators, ? matches one character, and '/' and '\' each match either separator. It must match the file's whole path or the part after any separator, so '*.csv' and 'run_*.csv' match files in any folder. For job_completed, source_job_id (required) and statuses (list drawn from completed and failed; defaults to completed). For schedule, cron (required five-field expression: minute, hour, day of month, month, day of week) and timezone (required IANA timezone, e.g. America/Los_Angeles). Cron supports numbers, month and weekday names, *, ranges, lists, and steps.
     
 </dd>
 </dl>
@@ -1062,7 +1062,7 @@ client.jobs.update(
 <dl>
 <dd>
 
-**trigger_conditions:** `typing.Optional[typing.Dict[str, typing.Any]]` — Filters on the triggering event. For file_uploaded, any of file_name_pattern (glob or regex), file_extensions (list of strings starting with '.'), source_type, min_size_kb, and max_size_kb. For job_completed, source_job_id (required) and statuses (list drawn from completed and failed; defaults to completed). For schedule, cron (required five-field expression: minute, hour, day of month, month, day of week) and timezone (required IANA timezone, e.g. America/Los_Angeles). Cron supports numbers, month and weekday names, *, ranges, lists, and steps.
+**trigger_conditions:** `typing.Optional[typing.Dict[str, typing.Any]]` — Filters on the triggering event. For file_uploaded, any of file_name_pattern, file_extensions (list of strings starting with '.'; files with no extension always pass), source_type, min_size_kb, and max_size_kb (both inclusive). file_name_pattern is a case-sensitive glob in which * matches any characters, including folder separators, ? matches one character, and '/' and '\' each match either separator. It must match the file's whole path or the part after any separator, so '*.csv' and 'run_*.csv' match files in any folder. For job_completed, source_job_id (required) and statuses (list drawn from completed and failed; defaults to completed). For schedule, cron (required five-field expression: minute, hour, day of month, month, day of week) and timezone (required IANA timezone, e.g. America/Los_Angeles). Cron supports numbers, month and weekday names, *, ranges, lists, and steps.
     
 </dd>
 </dl>
