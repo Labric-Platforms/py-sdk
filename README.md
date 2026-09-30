@@ -37,10 +37,10 @@ methods and types.
 ## Support
 
 - [Documentation](https://docs.labric.co)
-- [Issues](https://github.com/Labric-Platforms/py-sdk/issues)
+- [Issues](https://github.com/labric/py-sdk/issues)
 
 ## Contributing
 
 This SDK is largely generated code. See
-[CONTRIBUTING.md](https://github.com/Labric-Platforms/py-sdk/blob/main/CONTRIBUTING.md)
+[CONTRIBUTING.md](https://github.com/labric/py-sdk/blob/main/CONTRIBUTING.md)
 for how it is generated and released.

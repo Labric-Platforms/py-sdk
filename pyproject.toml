@@ -16,7 +16,7 @@ dependencies = [
 Homepage = "https://labric.co"
 Platform = "https://platform.labric.co"
 Documentation = "https://docs.labric.co"
-Repository = "https://github.com/Labric-Platforms/py-sdk"
+Repository = "https://github.com/labric/py-sdk"
 
 [dependency-groups]
 dev = ["pytest>=7.4.0"]
