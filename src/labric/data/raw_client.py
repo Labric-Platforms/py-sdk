@@ -6,75 +6,117 @@ from json.decoder import JSONDecodeError
 from ..core.api_error import ApiError
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.http_response import AsyncHttpResponse, HttpResponse
-from ..core.jsonable_encoder import encode_path_param
 from ..core.parse_error import ParsingError
 from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
-from ..errors.bad_gateway_error import BadGatewayError
 from ..errors.bad_request_error import BadRequestError
 from ..errors.forbidden_error import ForbiddenError
 from ..errors.internal_server_error import InternalServerError
 from ..errors.not_found_error import NotFoundError
 from ..errors.unauthorized_error import UnauthorizedError
 from ..errors.unprocessable_entity_error import UnprocessableEntityError
-from ..types.annotation_schema import AnnotationSchema
 from ..types.error_schema import ErrorSchema
-from ..types.save_annotation_schema import SaveAnnotationSchema
+from ..types.series_write import SeriesWrite
+from ..types.table_write import TableWrite
 from ..types.validation_error_schema import ValidationErrorSchema
+from ..types.write_data_response import WriteDataResponse
 from pydantic import ValidationError
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
 
 
-class RawImagesClient:
+class RawDataClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    def annotate(
+    def write(
         self,
-        file_id: str,
         *,
-        annotations: typing.Sequence[SaveAnnotationSchema],
+        tables: typing.Optional[typing.Sequence[TableWrite]] = OMIT,
+        series: typing.Optional[typing.Sequence[SeriesWrite]] = OMIT,
+        job_execution_id: typing.Optional[str] = OMIT,
+        job_name: typing.Optional[str] = OMIT,
+        dry_run: typing.Optional[bool] = OMIT,
+        return_rows: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[typing.List[AnnotationSchema]]:
+    ) -> HttpResponse[WriteDataResponse]:
         """
-        Save masks on an image as annotations, one per entry.
+        Insert, upsert, update, or delete rows across tables, and write raw
+        series, in a single transaction.
 
-        Each entry is a binary mask PNG (white-on-transparent, base64-encoded)
-        for a label; labels are created on first use. Saving is additive, so
-        a label can accumulate several masks on the same image. The annotations
-        a segmentation model returns from predict can be passed straight through;
-        each names the file it was predicted for, and one for a different file
-        rejects the request. Leave is_human_vetted false for automated saves:
-        the mask editor flags unvetted masks for review, and only vetted masks
-        feed training. The file must be a processed image. All-or-nothing: one
-        bad entry rejects the whole request.
+        Table writes target the organization's tables from get_schema or core
+        tables such as experiment, operation, and carrier. They are applied in
+        request order, so one request can create a sample and then the
+        measurements that reference it: label a row with "_ref": "s1" and point at
+        it with "@s1" from a foreign key column of any later row. A foreign key may
+        also be a lookup object such as {"name": "S-001"} that matches exactly one
+        row that existed before the request. Primary keys are generated when
+        omitted where the table allows it, and are always returned in input
+        order.
+
+        A series holds the points of one parent row in a raw table as one list per
+        column. Writing a series replaces the parent's existing series in that
+        table, so repeating a write is safe. The server fills in the primary key,
+        the parent foreign key, and an integer order column.
+
+        Every row, series, and lookup is checked before anything is written, and
+        all of those problems are reported together in errors. Each has a path
+        naming its place in the request, such as tables[1].rows[0].sample. Keys
+        for upsert, update, and delete are matched as each table write is
+        applied, and any failure rolls back the whole request. The write is recorded under a job execution,
+        created if none is given. Reverting that execution deletes the rows it
+        created along with their series; updates, deletes, and series written to
+        existing parents are not undone.
+
+        The request body must be under 4.5 MB, which the row and series value
+        limits keep most requests within.
 
         Requires an API key with the `write` scope.
 
         Parameters
         ----------
-        file_id : str
+        tables : typing.Optional[typing.Sequence[TableWrite]]
+            Table writes, applied in order. A row may reference only rows that appear before it. At most 10,000 rows across all table writes.
 
-        annotations : typing.Sequence[SaveAnnotationSchema]
+        series : typing.Optional[typing.Sequence[SeriesWrite]]
+            Raw series, applied after the table writes. Writing a series replaces any series the parent already has in that table. At most 250,000 values across all columns of all series.
+
+        job_execution_id : typing.Optional[str]
+            Job execution to record this write under. When omitted, one is created and returned so the write can be reverted as a unit.
+
+        job_name : typing.Optional[str]
+            Name of the job an auto-created execution belongs to. Defaults to 'Off-Platform Manual Job'.
+
+        dry_run : typing.Optional[bool]
+            Run every validation and constraint check, then roll back instead of committing.
+
+        return_rows : typing.Optional[bool]
+            Include the written rows of each table write in its result.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        HttpResponse[typing.List[AnnotationSchema]]
+        HttpResponse[WriteDataResponse]
             OK
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"api/v1/images/{encode_path_param(file_id)}/annotations",
+            "api/v1/data/write",
             method="POST",
             json={
-                "annotations": convert_and_respect_annotation_metadata(
-                    object_=annotations, annotation=typing.Sequence[SaveAnnotationSchema], direction="write"
+                "tables": convert_and_respect_annotation_metadata(
+                    object_=tables, annotation=typing.Sequence[TableWrite], direction="write"
                 ),
+                "series": convert_and_respect_annotation_metadata(
+                    object_=series, annotation=typing.Sequence[SeriesWrite], direction="write"
+                ),
+                "job_execution_id": job_execution_id,
+                "job_name": job_name,
+                "dry_run": dry_run,
+                "return_rows": return_rows,
             },
             headers={
                 "content-type": "application/json",
@@ -85,9 +127,9 @@ class RawImagesClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    typing.List[AnnotationSchema],
+                    WriteDataResponse,
                     parse_obj_as(
-                        type_=typing.List[AnnotationSchema],  # type: ignore
+                        type_=WriteDataResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -158,17 +200,6 @@ class RawImagesClient:
                         ),
                     ),
                 )
-            if _response.status_code == 502:
-                raise BadGatewayError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
             _response_json = _response.json()
         except JSONDecodeError:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
@@ -179,53 +210,96 @@ class RawImagesClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
 
-class AsyncRawImagesClient:
+class AsyncRawDataClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    async def annotate(
+    async def write(
         self,
-        file_id: str,
         *,
-        annotations: typing.Sequence[SaveAnnotationSchema],
+        tables: typing.Optional[typing.Sequence[TableWrite]] = OMIT,
+        series: typing.Optional[typing.Sequence[SeriesWrite]] = OMIT,
+        job_execution_id: typing.Optional[str] = OMIT,
+        job_name: typing.Optional[str] = OMIT,
+        dry_run: typing.Optional[bool] = OMIT,
+        return_rows: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[typing.List[AnnotationSchema]]:
+    ) -> AsyncHttpResponse[WriteDataResponse]:
         """
-        Save masks on an image as annotations, one per entry.
+        Insert, upsert, update, or delete rows across tables, and write raw
+        series, in a single transaction.
 
-        Each entry is a binary mask PNG (white-on-transparent, base64-encoded)
-        for a label; labels are created on first use. Saving is additive, so
-        a label can accumulate several masks on the same image. The annotations
-        a segmentation model returns from predict can be passed straight through;
-        each names the file it was predicted for, and one for a different file
-        rejects the request. Leave is_human_vetted false for automated saves:
-        the mask editor flags unvetted masks for review, and only vetted masks
-        feed training. The file must be a processed image. All-or-nothing: one
-        bad entry rejects the whole request.
+        Table writes target the organization's tables from get_schema or core
+        tables such as experiment, operation, and carrier. They are applied in
+        request order, so one request can create a sample and then the
+        measurements that reference it: label a row with "_ref": "s1" and point at
+        it with "@s1" from a foreign key column of any later row. A foreign key may
+        also be a lookup object such as {"name": "S-001"} that matches exactly one
+        row that existed before the request. Primary keys are generated when
+        omitted where the table allows it, and are always returned in input
+        order.
+
+        A series holds the points of one parent row in a raw table as one list per
+        column. Writing a series replaces the parent's existing series in that
+        table, so repeating a write is safe. The server fills in the primary key,
+        the parent foreign key, and an integer order column.
+
+        Every row, series, and lookup is checked before anything is written, and
+        all of those problems are reported together in errors. Each has a path
+        naming its place in the request, such as tables[1].rows[0].sample. Keys
+        for upsert, update, and delete are matched as each table write is
+        applied, and any failure rolls back the whole request. The write is recorded under a job execution,
+        created if none is given. Reverting that execution deletes the rows it
+        created along with their series; updates, deletes, and series written to
+        existing parents are not undone.
+
+        The request body must be under 4.5 MB, which the row and series value
+        limits keep most requests within.
 
         Requires an API key with the `write` scope.
 
         Parameters
         ----------
-        file_id : str
+        tables : typing.Optional[typing.Sequence[TableWrite]]
+            Table writes, applied in order. A row may reference only rows that appear before it. At most 10,000 rows across all table writes.
 
-        annotations : typing.Sequence[SaveAnnotationSchema]
+        series : typing.Optional[typing.Sequence[SeriesWrite]]
+            Raw series, applied after the table writes. Writing a series replaces any series the parent already has in that table. At most 250,000 values across all columns of all series.
+
+        job_execution_id : typing.Optional[str]
+            Job execution to record this write under. When omitted, one is created and returned so the write can be reverted as a unit.
+
+        job_name : typing.Optional[str]
+            Name of the job an auto-created execution belongs to. Defaults to 'Off-Platform Manual Job'.
+
+        dry_run : typing.Optional[bool]
+            Run every validation and constraint check, then roll back instead of committing.
+
+        return_rows : typing.Optional[bool]
+            Include the written rows of each table write in its result.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
         Returns
         -------
-        AsyncHttpResponse[typing.List[AnnotationSchema]]
+        AsyncHttpResponse[WriteDataResponse]
             OK
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"api/v1/images/{encode_path_param(file_id)}/annotations",
+            "api/v1/data/write",
             method="POST",
             json={
-                "annotations": convert_and_respect_annotation_metadata(
-                    object_=annotations, annotation=typing.Sequence[SaveAnnotationSchema], direction="write"
+                "tables": convert_and_respect_annotation_metadata(
+                    object_=tables, annotation=typing.Sequence[TableWrite], direction="write"
                 ),
+                "series": convert_and_respect_annotation_metadata(
+                    object_=series, annotation=typing.Sequence[SeriesWrite], direction="write"
+                ),
+                "job_execution_id": job_execution_id,
+                "job_name": job_name,
+                "dry_run": dry_run,
+                "return_rows": return_rows,
             },
             headers={
                 "content-type": "application/json",
@@ -236,9 +310,9 @@ class AsyncRawImagesClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    typing.List[AnnotationSchema],
+                    WriteDataResponse,
                     parse_obj_as(
-                        type_=typing.List[AnnotationSchema],  # type: ignore
+                        type_=WriteDataResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -300,17 +374,6 @@ class AsyncRawImagesClient:
                 )
             if _response.status_code == 500:
                 raise InternalServerError(
-                    headers=dict(_response.headers),
-                    body=typing.cast(
-                        ErrorSchema,
-                        parse_obj_as(
-                            type_=ErrorSchema,  # type: ignore
-                            object_=_response.json(),
-                        ),
-                    ),
-                )
-            if _response.status_code == 502:
-                raise BadGatewayError(
                     headers=dict(_response.headers),
                     body=typing.cast(
                         ErrorSchema,

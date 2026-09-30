@@ -1359,6 +1359,9 @@ client.jobs.revert(
 
 Write records to a table.
 
+Deprecated: use write_data (client.data.write), which writes several
+tables and raw series in one transaction.
+
 Inserts or updates records in the specified target table. Supports batch
 inserts, upserts with match columns, default value functions (DATETIME_NOW,
 UUID4), and optional dry-run validation. A job execution is created
@@ -1811,6 +1814,9 @@ client.tools.get_schema()
 
 Write records to multiple tables in a single transaction.
 
+Deprecated: use write_data (client.data.write), which also writes raw
+series and supports update and delete.
+
 Supports:
 - Batch references: Use "_ref" to label records, "@refname" to reference them
 - Natural keys: Use human-readable values for foreign keys (e.g., recipe name)
@@ -1978,6 +1984,148 @@ client.images.annotate(
 <dd>
 
 **annotations:** `typing.List[SaveAnnotationSchema]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## data
+<details><summary><code>client.data.<a href="src/labric/data/client.py">write</a>(...) -> WriteDataResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Insert, upsert, update, or delete rows across tables, and write raw
+series, in a single transaction.
+
+Table writes target the organization's tables from get_schema or core
+tables such as experiment, operation, and carrier. They are applied in
+request order, so one request can create a sample and then the
+measurements that reference it: label a row with "_ref": "s1" and point at
+it with "@s1" from a foreign key column of any later row. A foreign key may
+also be a lookup object such as {"name": "S-001"} that matches exactly one
+row that existed before the request. Primary keys are generated when
+omitted where the table allows it, and are always returned in input
+order.
+
+A series holds the points of one parent row in a raw table as one list per
+column. Writing a series replaces the parent's existing series in that
+table, so repeating a write is safe. The server fills in the primary key,
+the parent foreign key, and an integer order column.
+
+Every row, series, and lookup is checked before anything is written, and
+all of those problems are reported together in errors. Each has a path
+naming its place in the request, such as tables[1].rows[0].sample. Keys
+for upsert, update, and delete are matched as each table write is
+applied, and any failure rolls back the whole request. The write is recorded under a job execution,
+created if none is given. Reverting that execution deletes the rows it
+created along with their series; updates, deletes, and series written to
+existing parents are not undone.
+
+The request body must be under 4.5 MB, which the row and series value
+limits keep most requests within.
+
+Requires an API key with the `write` scope.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from labric import Labric
+from labric.environment import LabricEnvironment
+
+client = Labric(
+    api_key="<token>",
+    environment=LabricEnvironment.DEFAULT,
+)
+
+client.data.write()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**tables:** `typing.Optional[typing.List[TableWrite]]` — Table writes, applied in order. A row may reference only rows that appear before it. At most 10,000 rows across all table writes.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**series:** `typing.Optional[typing.List[SeriesWrite]]` — Raw series, applied after the table writes. Writing a series replaces any series the parent already has in that table. At most 250,000 values across all columns of all series.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**job_execution_id:** `typing.Optional[str]` — Job execution to record this write under. When omitted, one is created and returned so the write can be reverted as a unit.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**job_name:** `typing.Optional[str]` — Name of the job an auto-created execution belongs to. Defaults to 'Off-Platform Manual Job'.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**dry_run:** `typing.Optional[bool]` — Run every validation and constraint check, then roll back instead of committing.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**return_rows:** `typing.Optional[bool]` — Include the written rows of each table write in its result.
     
 </dd>
 </dl>
