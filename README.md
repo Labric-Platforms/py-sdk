@@ -12,16 +12,25 @@ pip install labric
 ## Usage
 
 ```python
-from labric import Labric
+from labric import Labric, SeriesWrite, TableWrite
 
 client = Labric()  # reads LABRIC_API_KEY from the environment
 # or pass the API key explicitly: Labric(api_key="lbk_...")
 
-client.tools.write(
-    target_name="samples",
-    target_type="table",
-    data=[{"sample_id": "S-001", "status": "received"}],
-    mode="create",
+client.data.write(
+    tables=[
+        TableWrite(
+            table="samples",
+            rows=[{"_ref": "s1", "name": "S-001", "status": "received"}],
+        ),
+    ],
+    series=[
+        SeriesWrite(
+            table="spectra",
+            parent="@s1",
+            columns={"wavelength": [400, 500, 600], "absorbance": [0.12, 0.34, 0.21]},
+        ),
+    ],
 )
 ```
 
